@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-nohemi;
+  @apply font-spacegrotesk;
+  @apply font-inter;
+}
+
+@font-face {
+  font-family: "Nohemi";
+  src: url("../public/fonts/Nohemi.ttf");
+  font-display: swap;
+  descent-override: 0%;
+}
+
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("../public/fonts/BricolageGrotesque-VariableFont_opsz\,wdth\,wght.ttf");
+  font-display: swap;
+  descent-override: 0%;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../public/fonts/Inter-VariableFont_opsz,wght.ttf");
+  font-display: swap;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: auto;
+  margin: auto;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  overflow-x: clip;
+  /* line-height: 19px; */
+  letter-spacing: 0.16px;
+  background-color: #1e1e1e;
+  descent-override: 0%;
+}
+
+* {
+  font-family: "Inter";
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+.MuiTypography-root {
+  @apply font-inter;
+}
+
+.wrap-4-line {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wrap-3-line {
+  /* display: -webkit-box !important; */
+  /* -webkit-line-clamp: 3; */
+  /* -webkit-box-orient: vertical; */
+  overflow: hidden;
+  height: 5rem;
+  /* text-overflow: ellipsis; */
+}
+.wrap-2-line {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wrap-1-line {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
