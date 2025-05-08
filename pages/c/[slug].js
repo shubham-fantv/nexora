@@ -105,7 +105,7 @@ export default function ScriptWritingApp({ slug }) {
   };
 
   useEffect(() => {
-    sendMessage;
+    sendMessage();
   }, []);
 
   const handleKeyPress = (e) => {
