@@ -13,28 +13,23 @@ export function LeftPanel({
 }) {
   const responseContainerRef = useRef(null);
 
-  // Auto-scroll to bottom when content updates
   useEffect(() => {
     if (responseContainerRef.current) {
       responseContainerRef.current.scrollTop = responseContainerRef.current.scrollHeight;
     }
   }, [content, leftSectionData]);
 
-  // Render chat messages from leftSectionData
   const renderChatMessages = () => {
     if (leftSectionData && leftSectionData.length > 0) {
       return leftSectionData.map((item, index) => {
         if (item.sender) {
           return (
-            <div
-              key={`sender-${index}`}
-              className="bg-[#242424] rounded-lg p-4 border border-[#FFFFFF26] mb-3"
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-pink-200 flex items-center justify-center text-gray-800 flex-shrink-0">
+            <div key={`sender-${index}`} className=" rounded-lg flex  flex-row-reverse mb-3">
+              <div className="flex items-start gap-3   bg-[#4e4e4e] w-[90%] rounded-lg p-2 border border-[#FFFFFF26]">
+                <div className="w-6 h-6 rounded-full bg-pink-200 flex items-center justify-center text-gray-800 flex-shrink-0">
                   N
                 </div>
-                <p className="text-gray-300 mt-2">{item.sender.message}</p>
+                <p className="text-gray-300">{item.sender.message}</p>
               </div>
             </div>
           );
@@ -42,7 +37,7 @@ export function LeftPanel({
           return (
             <div
               key={`receiver-${index}`}
-              className="bg-[#242424] rounded-lg p-4 border border-[#FFFFFF26] mb-3"
+              className="bg-[#242424]  w-[90%] rounded-lg pl-3 p-2 border border-[#FFFFFF26] mb-3"
             >
               <div className="text-sm text-gray-300">
                 <RenderMarkdown markdown={item.receiver.message} />
@@ -59,7 +54,7 @@ export function LeftPanel({
     <div className="w-1/3 p-4 flex flex-col gap-4 bg-black relative h-full">
       <div
         ref={responseContainerRef}
-        className="bg-[#242424] border border-[#FFFFFF26] rounded-lg p-4 flex-grow overflow-y-auto mb-[128px]"
+        className="bg-[#242424] border border-[#FFFFFF26] rounded-lg p-2 overflow-y-auto mb-[128px] w-full"
       >
         {renderChatMessages()}
       </div>

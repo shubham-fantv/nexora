@@ -5,6 +5,10 @@ import RenderMarkdown from "../../src/component/RenderMarkdown";
 import { LeftPanel } from "../../src/component/detail/LeftPanel";
 import { MainPanel } from "../../src/component/detail/MainPanel";
 import { RightPanel } from "../../src/component/detail/RightPanel";
+import { useMutation } from "react-query";
+import fetcher from "../../src/dataProvider";
+import Loader from "../../src/component/common/Loading/loading";
+import { quotes } from "../../src/utils/common";
 // Main App Component
 export default function ScriptWritingApp({ slug }) {
   const [activeTab, setActiveTab] = useState("Synopsis");
@@ -15,7 +19,7 @@ export default function ScriptWritingApp({ slug }) {
 
   const [content, setContent] = useState("");
   const [buffer, setBuffer] = useState("");
-
+  const [subTitle, setSubTitle] = useState("");
   const [prompt, setPrompt] = useState("");
   const [leftSection, setLeftSection] = useState();
   const [tabs, setTabs] = useState([]);
@@ -30,68 +34,24 @@ export default function ScriptWritingApp({ slug }) {
     "Storyboard",
   ]);
 
+  const { mutate: generateVideoApi } = useMutation((obj) => fetcher.post(`/chat/send`, obj), {
+    onSuccess: (response) => {
+      console.log("🚀 ~ const{mutate:generateVideoApi}=useMutation ~ response:", response);
+      setIsLoading(false);
+      updateStateFromParsedData(response);
+    },
+    onError: (error) => {
+      alert(error.response.data.message);
+      setIsLoading(false);
+      console.error("Error generating video:", error);
+    },
+  });
+
   const sendMessage = async () => {
     // if (!message.trim()) return;
-
     setIsLoading(true);
     setContent("");
-
-    try {
-      const response = await fetch("http://20.244.14.85:8080/chat/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "text/event-stream",
-        },
-        body: JSON.stringify({ session_id: slug, prompt: message }),
-      });
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let buffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        buffer += chunk;
-
-        // Process complete data lines
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || ""; // Keep the last incomplete line in buffer
-
-        for (let line of lines) {
-          if (line.startsWith("data:")) {
-            const dataContent = line.replace(/^data:\s*/, "").trim();
-
-            if (dataContent === "[DONE]") {
-              console.log("Stream complete");
-              continue;
-            }
-
-            if (dataContent.startsWith("RESPONSE_JSON:")) {
-              try {
-                const jsonStr = dataContent.replace("RESPONSE_JSON:", "").trim();
-                const parsedData = JSON.parse(jsonStr);
-
-                updateStateFromParsedData(parsedData);
-
-                setContent((prev) => prev + chunk);
-              } catch (jsonError) {
-                console.error("Error parsing JSON:", jsonError);
-              }
-            } else {
-              setContent((prev) => prev + dataContent);
-            }
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Error:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    generateVideoApi({ session_id: slug, prompt: message });
   };
 
   const updateStateFromParsedData = (data) => {
@@ -114,11 +74,23 @@ export default function ScriptWritingApp({ slug }) {
     }
   };
 
+  useEffect(() => {
+    const pickRandomQuote = () => {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      setSubTitle(quotes[randomIndex]);
+    };
+    pickRandomQuote();
+    const interval = setInterval(pickRandomQuote, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div
       className="flex bg-black text-white"
       style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
     >
+      {isLoading && <Loader title={"Please wait"} subTitle={subTitle} />}
       <LeftPanel
         message={message}
         setMessage={setMessage}

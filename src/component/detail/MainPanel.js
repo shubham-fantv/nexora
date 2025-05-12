@@ -40,7 +40,6 @@ export function MainPanel({
           </div>
         );
       default:
-        // For custom tabs from API
         return (
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-6">{activeTab}</h2>
@@ -58,7 +57,7 @@ export function MainPanel({
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-2 rounded-md ${
+            className={`px-6 pt-2 pb-3 rounded-md ${
               activeTab === tab ? "bg-blue-200 text-gray-800" : "bg-gray-700"
             }`}
           >
