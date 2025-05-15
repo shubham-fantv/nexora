@@ -23,6 +23,7 @@ export default function ScriptWritingApp({ slug }) {
   const [prompt, setPrompt] = useState("");
   const [leftSection, setLeftSection] = useState();
   const [tabs, setTabs] = useState([]);
+  console.log("🚀 ~ ScriptWritingApp ~ tabs:", tabs);
   const [synopsis, setSynopsis] = useState("");
   const [script, setScript] = useState("");
   const [character, setCharacter] = useState([]);
@@ -34,9 +35,10 @@ export default function ScriptWritingApp({ slug }) {
     "Storyboard",
   ]);
 
+  const [episodes, setEpisodes] = useState("");
+
   const { mutate: generateVideoApi } = useMutation((obj) => fetcher.post(`/chat/send`, obj), {
     onSuccess: (response) => {
-      console.log("🚀 ~ const{mutate:generateVideoApi}=useMutation ~ response:", response);
       setIsLoading(false);
       updateStateFromParsedData(response);
     },
@@ -55,6 +57,7 @@ export default function ScriptWritingApp({ slug }) {
   };
 
   const updateStateFromParsedData = (data) => {
+    console.log("🚀 ~ updateStateFromParsedData ~ data:", data.tabs);
     if (data.prompt !== undefined) setPrompt(data.prompt);
     if (data.left_section !== undefined) setLeftSection(data.left_section);
     if (data.tabs !== undefined) setTabs(data.tabs);
@@ -62,6 +65,7 @@ export default function ScriptWritingApp({ slug }) {
     if (data.script !== undefined) setScript(data.script);
     if (data.character !== undefined) setCharacter(data.character);
     if (data.storyboard !== undefined) setStoryboard(data.storyboard);
+    if (data.episodes !== undefined) setEpisodes(data.episodes);
   };
 
   useEffect(() => {
@@ -99,6 +103,7 @@ export default function ScriptWritingApp({ slug }) {
         sendMessage={sendMessage}
         handleKeyPress={handleKeyPress}
         isLoading={isLoading}
+        tabs={tabs}
       />
 
       <MainPanel
@@ -111,7 +116,7 @@ export default function ScriptWritingApp({ slug }) {
         storyboardData={storyboard}
       />
 
-      <RightPanel />
+      <RightPanel setMessage={setMessage} episodeData={episodes} />
     </div>
   );
 }

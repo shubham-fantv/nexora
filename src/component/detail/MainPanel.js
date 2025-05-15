@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useRef } from "react";
 import RenderMarkdown from "../RenderMarkdown";
+import CharacterGrid from "./CharacterGrid";
+import StoryboardUI from "./StoryboardUI";
 export function MainPanel({
   activeTab,
   setActiveTab,
@@ -15,30 +17,54 @@ export function MainPanel({
     switch (activeTab) {
       case "Synopsis":
         return (
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-6">Synopsis</h2>
-            {synopsisData ? (
-              <div className="text-gray-300">
-                <RenderMarkdown markdown={synopsisData} />
-              </div>
-            ) : (
-              <p className="text-gray-500">No synopsis data available yet.</p>
-            )}
+          <div
+            className="overflow-auto bg-[#242424] border border-[#FFFFFF26] rounded-lg p-6 relative"
+            style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold mb-6">Synopsis</h2>
+              {synopsisData ? (
+                <div className="text-gray-300">
+                  <RenderMarkdown markdown={synopsisData} />
+                </div>
+              ) : (
+                <p className="text-gray-500">No synopsis data available yet.</p>
+              )}
+            </div>
           </div>
         );
       case "Script":
         return (
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-6">Script</h2>
-            {scriptData ? (
-              <div className="text-gray-300">
-                <RenderMarkdown markdown={scriptData}></RenderMarkdown>
-              </div>
-            ) : (
-              <p className="text-gray-500">No script data available yet.</p>
-            )}
+          <div
+            className="overflow-auto bg-[#242424] border border-[#FFFFFF26] rounded-lg p-6 relative"
+            style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold mb-6">Script</h2>
+              {scriptData ? (
+                <div className="text-gray-300">
+                  <RenderMarkdown markdown={scriptData}></RenderMarkdown>
+                </div>
+              ) : (
+                <p className="text-gray-500">No script data available yet.</p>
+              )}
+            </div>
           </div>
         );
+      case "Character":
+        return (
+          <div className="mb-6">
+            <CharacterGrid charactersData={characterData} />
+          </div>
+        );
+
+      case "Storyboard":
+        return (
+          <div className="mb-6">
+            <StoryboardUI data={storyboardData} />
+          </div>
+        );
+
       default:
         return (
           <div className="mb-6">
@@ -68,7 +94,7 @@ export function MainPanel({
 
       {/* Main Content */}
       <div
-        className="overflow-auto bg-[#242424] border border-[#FFFFFF26] rounded-lg p-6 relative"
+        className="overflow-auto  relative"
         style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
       >
         {renderContent()}

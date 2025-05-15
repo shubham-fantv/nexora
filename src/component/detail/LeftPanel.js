@@ -10,8 +10,13 @@ export function LeftPanel({
   sendMessage,
   handleKeyPress,
   isLoading,
+  tabs,
 }) {
   const responseContainerRef = useRef(null);
+  const [staticTabs, setStaticTabs] = useState(["Create a detailed script", "Create Characters"]);
+  useEffect(() => {
+    setStaticTabs([...tabs, ...staticTabs]);
+  }, [tabs]);
 
   useEffect(() => {
     if (responseContainerRef.current) {
@@ -59,15 +64,19 @@ export function LeftPanel({
         {renderChatMessages()}
       </div>
 
-      <div className="flex gap-2 absolute bottom-24 left-4 right-4">
-        <button className="bg-[#242424] border border-[#FFFFFF26] rounded-md px-4 py-2 text-sm flex-grow hover:bg-gray-700/50 transition-colors">
-          Create a detailed script
-        </button>
-        <button className="bg-[#242424] border border-[#FFFFFF26] rounded-md px-4 py-2 text-sm flex-grow hover:bg-gray-700/50 transition-colors">
-          Create Characters
-        </button>
+      <div className="absolute bottom-24 left-4 right-4 overflow-x-auto">
+        <div className="flex gap-2 w-max whitespace-nowrap">
+          {staticTabs.map((item, i) => (
+            <button
+              onClick={() => setMessage(item)}
+              key={i}
+              className="bg-[#242424] border border-[#FFFFFF26] rounded-md px-4 py-2 text-sm hover:bg-gray-700/50 transition-colors"
+            >
+              {item}
+            </button>
+          ))}
+        </div>
       </div>
-
       {/* Input box sticky at bottom */}
       <div className="absolute bottom-4 left-4 right-4 bg-[#242424] border border-[#FFFFFF26] rounded-lg p-4 flex items-center">
         <input
