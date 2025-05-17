@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useRef } from "react";
 import RenderMarkdown from "../RenderMarkdown";
+import moment from "moment";
 export function LeftPanel({
   message,
   setMessage,
@@ -29,22 +30,19 @@ export function LeftPanel({
       return leftSectionData.map((item, index) => {
         if (item.sender) {
           return (
-            <div key={`sender-${index}`} className=" rounded-lg flex  flex-row-reverse mb-3">
-              <div className="flex items-start gap-3   bg-[#4e4e4e] w-[90%] rounded-lg p-2 border border-[#FFFFFF26]">
+            <div key={`sender-${index}`} className=" flex flex-row-reverse rounded-lg  mb-3 ">
+              <div className="flex items-start gap-3   bg-[#f7f4ed] w-[80%] rounded-lg p-2  shadow-md">
                 <div className="w-6 h-6 rounded-full bg-pink-200 flex items-center justify-center text-gray-800 flex-shrink-0">
                   N
                 </div>
-                <p className="text-gray-300">{item.sender.message}</p>
+                <p className="text-[#5D5D5D]">{item.sender.message}</p>
               </div>
             </div>
           );
         } else if (item.receiver) {
           return (
-            <div
-              key={`receiver-${index}`}
-              className="bg-[#242424]  w-[90%] rounded-lg pl-3 p-2 border border-[#FFFFFF26] mb-3"
-            >
-              <div className="text-sm text-gray-300">
+            <div key={`receiver-${index}`} className="w-[100%] rounded-lg pl-3 p-2 mb-3">
+              <div className="text-sm text-[#5D5D5D]">
                 <RenderMarkdown markdown={item.receiver.message} />
               </div>
             </div>
@@ -56,21 +54,21 @@ export function LeftPanel({
   };
 
   return (
-    <div className="w-1/3 p-4 flex flex-col gap-4 bg-black relative h-full">
+    <div className="w-[30%] p-4 flex flex-col gap-4 relative h-full">
       <div
         ref={responseContainerRef}
-        className="bg-[#242424] border border-[#FFFFFF26] rounded-lg p-2 overflow-y-auto mb-[128px] w-full"
+        className="border border-[#FFFFFF26] rounded-lg  overflow-y-auto mb-[128px] w-full scrollbar-hide"
       >
         {renderChatMessages()}
       </div>
 
-      <div className="absolute bottom-24 left-4 right-4 overflow-x-auto">
+      <div className="absolute bottom-24 left-4 right-4 overflow-x-auto scrollbar-hide">
         <div className="flex gap-2 w-max whitespace-nowrap">
           {staticTabs.map((item, i) => (
             <button
               onClick={() => setMessage(item)}
               key={i}
-              className="bg-[#242424] border border-[#FFFFFF26] rounded-md px-4 py-2 text-sm hover:bg-gray-700/50 transition-colors"
+              className="border border-[#18181826] bg-[#FFF] rounded-md px-4 py-2 text-sm hover:bg-gray-700/50 transition-colors"
             >
               {item}
             </button>
@@ -78,11 +76,11 @@ export function LeftPanel({
         </div>
       </div>
       {/* Input box sticky at bottom */}
-      <div className="absolute bottom-4 left-4 right-4 bg-[#242424] border border-[#FFFFFF26] rounded-lg p-4 flex items-center">
+      <div className="absolute bottom-4 left-4 right-4 border border-[#18181826] bg-[#FFF] rounded-lg p-4 flex items-center">
         <input
           type="text"
           placeholder="Give prompt here"
-          className="bg-transparent flex-grow text-gray-300 outline-none"
+          className="bg-transparent flex-grow text-[#686868] outline-none"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
@@ -91,21 +89,12 @@ export function LeftPanel({
         <button
           onClick={sendMessage}
           disabled={isLoading}
-          className="w-8 h-8 bg-gray-700 rounded flex items-center justify-center ml-2 cursor-pointer disabled:opacity-50"
+          className="w-8 h-8 bg-[#181818] rounded flex items-center justify-center ml-2 cursor-pointer "
         >
           {isLoading ? (
-            <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
+            <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
           ) : (
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 5v14M5 12h14" />
-            </svg>
+            <img src="/images/submit.svg" alt="Submit" />
           )}
         </button>
       </div>

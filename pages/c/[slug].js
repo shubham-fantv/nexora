@@ -23,7 +23,6 @@ export default function ScriptWritingApp({ slug }) {
   const [prompt, setPrompt] = useState("");
   const [leftSection, setLeftSection] = useState();
   const [tabs, setTabs] = useState([]);
-  console.log("🚀 ~ ScriptWritingApp ~ tabs:", tabs);
   const [synopsis, setSynopsis] = useState("");
   const [script, setScript] = useState("");
   const [character, setCharacter] = useState([]);
@@ -40,6 +39,7 @@ export default function ScriptWritingApp({ slug }) {
   const { mutate: generateVideoApi } = useMutation((obj) => fetcher.post(`/chat/send`, obj), {
     onSuccess: (response) => {
       setIsLoading(false);
+
       updateStateFromParsedData(response);
     },
     onError: (error) => {
@@ -57,7 +57,6 @@ export default function ScriptWritingApp({ slug }) {
   };
 
   const updateStateFromParsedData = (data) => {
-    console.log("🚀 ~ updateStateFromParsedData ~ data:", data.tabs);
     if (data.prompt !== undefined) setPrompt(data.prompt);
     if (data.left_section !== undefined) setLeftSection(data.left_section);
     if (data.tabs !== undefined) setTabs(data.tabs);
@@ -91,10 +90,12 @@ export default function ScriptWritingApp({ slug }) {
 
   return (
     <div
-      className="flex bg-black text-white"
-      style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
+      className="flex text-black "
+      style={{
+        height: "calc(100vh - 60px)",
+        maxHeigh: "calc(100vh - 60px)",
+      }}
     >
-      {isLoading && <Loader title={"Please wait"} subTitle={subTitle} />}
       <LeftPanel
         message={message}
         setMessage={setMessage}
@@ -114,9 +115,11 @@ export default function ScriptWritingApp({ slug }) {
         scriptData={script}
         characterData={character}
         storyboardData={storyboard}
+        isLoading={isLoading}
+        isFullWidth={!!episodes?.length == 0}
       />
 
-      <RightPanel setMessage={setMessage} episodeData={episodes} />
+      {!episodes?.length == 0 && <RightPanel setMessage={setMessage} episodeData={episodes} />}
     </div>
   );
 }

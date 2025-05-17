@@ -10,7 +10,7 @@ const styles = {
     zIndex: "99",
     padding: "0 40px",
     width: "100%",
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#FFF",
 
     "@media (max-width:767px)": {
       height: "55px",
@@ -46,6 +46,8 @@ const styles = {
         textDecoration: "none",
         display: "flex",
         marginRight: "80px",
+        background: "#000",
+        borderRadius: "12px",
 
         "@media (max-width:767px)": {
           position: "relative",

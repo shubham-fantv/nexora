@@ -12,7 +12,8 @@ const RenderMarkdown = ({ markdown }) => {
               h1: {
                 props: {
                   style: {
-                    fontSize: "2.25rem", // 36px
+                    fontSize: "2rem", // 32px
+                    lineHeight: "34px",
                     fontWeight: "bold",
                     margin: "1.5rem 0 1rem",
                   },
@@ -21,7 +22,8 @@ const RenderMarkdown = ({ markdown }) => {
               h2: {
                 props: {
                   style: {
-                    fontSize: "1.875rem", // 30px
+                    fontSize: "1.6875rem", // 27px
+                    lineHeight: "29px",
                     fontWeight: "bold",
                     margin: "1.25rem 0 0.75rem",
                   },
@@ -30,7 +32,8 @@ const RenderMarkdown = ({ markdown }) => {
               h3: {
                 props: {
                   style: {
-                    fontSize: "1.5rem", // 24px
+                    fontSize: "1.375rem", // 22px
+                    lineHeight: "24px",
                     fontWeight: "600",
                     margin: "1rem 0 0.5rem",
                   },
@@ -39,7 +42,8 @@ const RenderMarkdown = ({ markdown }) => {
               h4: {
                 props: {
                   style: {
-                    fontSize: "1.25rem", // 20px
+                    fontSize: "1.125rem", // 18px
+                    lineHeight: "20px",
                     fontWeight: "600",
                     margin: "1rem 0 0.5rem",
                   },
@@ -48,7 +52,8 @@ const RenderMarkdown = ({ markdown }) => {
               h5: {
                 props: {
                   style: {
-                    fontSize: "1rem", // 16px
+                    fontSize: "0.875rem", // 14px
+                    lineHeight: "16px",
                     fontWeight: "600",
                     margin: "0.75rem 0 0.5rem",
                   },
@@ -57,7 +62,8 @@ const RenderMarkdown = ({ markdown }) => {
               h6: {
                 props: {
                   style: {
-                    fontSize: "0.875rem", // 14px
+                    fontSize: "0.75rem", // 12px
+
                     fontWeight: "600",
                     margin: "0.5rem 0 0.25rem",
                   },
@@ -66,10 +72,10 @@ const RenderMarkdown = ({ markdown }) => {
               p: {
                 props: {
                   style: {
-                    fontSize: "1rem", // 16px
-                    lineHeight: "1.6",
+                    fontSize: "0.875rem", // 14px
+
                     margin: "0.5rem 0",
-                    whiteSpace: "pre-line", // Preserves \n line breaks
+                    whiteSpace: "pre-line",
                   },
                 },
               },
@@ -78,6 +84,8 @@ const RenderMarkdown = ({ markdown }) => {
                   style: {
                     color: "#1e90ff",
                     textDecoration: "underline",
+                    fontSize: "0.875rem",
+                    lineHeight: "16px",
                   },
                   target: "_blank",
                   rel: "noopener noreferrer",
@@ -88,6 +96,8 @@ const RenderMarkdown = ({ markdown }) => {
                   style: {
                     paddingLeft: "1.5rem",
                     marginBottom: "1rem",
+                    fontSize: "0.875rem",
+                    lineHeight: "16px",
                   },
                 },
               },
@@ -96,6 +106,8 @@ const RenderMarkdown = ({ markdown }) => {
                   style: {
                     paddingLeft: "1.5rem",
                     marginBottom: "1rem",
+                    fontSize: "0.875rem",
+                    lineHeight: "16px",
                   },
                 },
               },
@@ -103,6 +115,8 @@ const RenderMarkdown = ({ markdown }) => {
                 props: {
                   style: {
                     marginBottom: "0.25rem",
+                    fontSize: "0.875rem",
+                    lineHeight: "16px",
                   },
                 },
               },
@@ -114,6 +128,8 @@ const RenderMarkdown = ({ markdown }) => {
                     color: "#666",
                     fontStyle: "italic",
                     margin: "1rem 0",
+                    fontSize: "0.875rem",
+                    lineHeight: "16px",
                   },
                 },
               },
@@ -125,7 +141,8 @@ const RenderMarkdown = ({ markdown }) => {
                     color: "#000",
                     borderRadius: "4px",
                     fontFamily: "monospace",
-                    fontSize: "0.95rem",
+                    fontSize: "0.75rem",
+                    lineHeight: "14px",
                   },
                 },
               },
@@ -136,7 +153,8 @@ const RenderMarkdown = ({ markdown }) => {
                     padding: "1rem",
                     borderRadius: "6px",
                     overflowX: "auto",
-                    fontSize: "0.95rem",
+                    fontSize: "0.75rem",
+                    lineHeight: "14px",
                     fontFamily: "monospace",
                     margin: "1rem 0",
                   },

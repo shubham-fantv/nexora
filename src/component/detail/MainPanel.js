@@ -12,23 +12,25 @@ export function MainPanel({
   scriptData,
   characterData,
   storyboardData,
+  isLoading,
+  isFullWidth,
 }) {
   const renderContent = () => {
     switch (activeTab) {
       case "Synopsis":
         return (
           <div
-            className="overflow-auto bg-[#242424] border border-[#FFFFFF26] rounded-lg p-6 relative"
+            className="overflow-auto bg-[#FFFFFF] border border-[#18181826] rounded-lg p-6 relative"
             style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
           >
             <div className="mb-6">
               <h2 className="text-2xl font-bold mb-6">Synopsis</h2>
               {synopsisData ? (
-                <div className="text-gray-300">
+                <div className="text-[#5D5D5D]">
                   <RenderMarkdown markdown={synopsisData} />
                 </div>
               ) : (
-                <p className="text-gray-500">No synopsis data available yet.</p>
+                <p className="text-[5D5D5D]">No synopsis data available yet.</p>
               )}
             </div>
           </div>
@@ -36,17 +38,17 @@ export function MainPanel({
       case "Script":
         return (
           <div
-            className="overflow-auto bg-[#242424] border border-[#FFFFFF26] rounded-lg p-6 relative"
+            className="overflow-auto bg-[#FFFFFF] border border-[#18181826] rounded-lg p-6 relative"
             style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
           >
             <div className="mb-6">
               <h2 className="text-2xl font-bold mb-6">Script</h2>
               {scriptData ? (
-                <div className="text-gray-300">
+                <div className="text-[#5D5D5D]">
                   <RenderMarkdown markdown={scriptData}></RenderMarkdown>
                 </div>
               ) : (
-                <p className="text-gray-500">No script data available yet.</p>
+                <p className="text-[5D5D5D]">No script data available yet.</p>
               )}
             </div>
           </div>
@@ -54,14 +56,14 @@ export function MainPanel({
       case "Character":
         return (
           <div className="mb-6">
-            <CharacterGrid charactersData={characterData} />
+            <CharacterGrid charactersData={characterData} isLoading={isLoading} />
           </div>
         );
 
       case "Storyboard":
         return (
           <div className="mb-6">
-            <StoryboardUI data={storyboardData} />
+            <StoryboardUI data={storyboardData} isLoading={isLoading} />
           </div>
         );
 
@@ -69,22 +71,24 @@ export function MainPanel({
         return (
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-6">{activeTab}</h2>
-            <p className="text-gray-500">Content for {activeTab} will be displayed here.</p>
+            <p className="text-[5D5D5D]">Content for {activeTab} will be displayed here.</p>
           </div>
         );
     }
   };
 
   return (
-    <div className="w-2/4 flex flex-col bg-black">
+    <div className={`${isFullWidth ? "w-[70%]" : "w-[60%]"} flex flex-col mr-2`}>
       {/* Tabs */}
-      <div className="flex gap-2 p-4 overflow-x-auto">
+      <div className="flex gap-2 py-4 overflow-x-auto scrollbar-hide">
         {availableTabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 pt-2 pb-3 rounded-md ${
-              activeTab === tab ? "bg-blue-200 text-gray-800" : "bg-gray-700"
+            className={` w-[150px] px-6 text-sm  rounded-md shadow-md  h-8 ${
+              activeTab === tab
+                ? "bg-[#181818] text-[#FFFFFF]"
+                : "bg-[#FFFFFF] text-[#5D5D5D] border border-[#D9D9D9]"
             }`}
           >
             {tab}
@@ -94,7 +98,7 @@ export function MainPanel({
 
       {/* Main Content */}
       <div
-        className="overflow-auto  relative"
+        className="overflow-auto  relative scrollbar-hide"
         style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
       >
         {renderContent()}

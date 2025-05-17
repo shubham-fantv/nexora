@@ -31,14 +31,15 @@ html,
 body {
   margin: 0;
   padding: 0;
-  scroll-behavior: auto;
+  /* scroll-behavior: auto; */
+  overscroll-behavior: none;
   margin: auto;
   font-family: "Inter", sans-serif;
   font-weight: 400;
   overflow-x: clip;
   /* line-height: 19px; */
   letter-spacing: 0.16px;
-  background-color: #1e1e1e;
+  background-color: #f7f7f7;
   descent-override: 0%;
 }
 
@@ -91,4 +92,12 @@ img {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }

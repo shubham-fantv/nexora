@@ -10,7 +10,7 @@ export default function CharacterGrid({ charactersData }) {
     <div className="min-h-screen">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {characters?.map((character, index) => (
-          <div key={index} className="group h-[200px] w-[160px] [perspective:1000px]">
+          <div key={index} className="group h-[210px] w-[180px] [perspective:1000px]">
             <div className="relative h-full w-full rounded-lg transition-all duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
               {/* Front of Card */}
               <div className="absolute inset-0 rounded-lg overflow-hidden">
@@ -30,16 +30,18 @@ export default function CharacterGrid({ charactersData }) {
               {/* Back of Card */}
               <div
                 style={{ background: "linear-gradient(180deg, #A0F9FF 0%, #A9A0FF 100%)" }}
-                className="absolute text-black inset-0 h-full w-full rounded-lg px-4 py-4 [transform:rotateY(180deg)] [backface-visibility:hidden]"
+                className="absolute text-black inset-0 h-full w-full rounded-lg px-4 py-4 [transform:rotateY(180deg)] [backface-visibility:hidden] overflow-auto"
               >
                 <div className="flex flex-col h-full">
                   <div className="text-2xl font-bold mb-2">{character.name}</div>
-                  <div className="bg-black/70 text-black px-3 py-1 rounded-md text-sm w-fit mb-4">
+
+                  <div className="bg-black/70 text-black px-3 py-1 rounded-md text-sm w-fit mb-4 overflow-auto max-w-full">
                     {character.role}
                   </div>
-                  <div className="text-sm">
-                    <p className="mb-2">{character.token}</p>
-                    <p>{character.description}</p>
+
+                  <div className="text-sm overflow-auto max-h-[200px] pr-2">
+                    <p className="mb-2 break-words">{character.token}</p>
+                    <p className="break-words">{character.description}</p>
                   </div>
                 </div>
               </div>

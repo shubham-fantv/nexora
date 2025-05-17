@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export function RightPanel({ setMessage, episodeData }) {
+  console.log("🚀 ~ RightPanel ~ episodeData:", episodeData);
   const [episodes, setEpisodes] = useState([]);
   useEffect(() => {
     setEpisodes(episodeData || []);
@@ -13,10 +14,10 @@ export function RightPanel({ setMessage, episodeData }) {
     setMessage(episode?.prompt);
     if (episode.child && episode.child.length > 0) {
       setOpenEpisodes((prev) => {
-        if (prev.includes(episode.id)) {
-          return prev.filter((id) => id !== episode.id);
+        if (prev.includes(episode.title)) {
+          return prev.filter((id) => id !== episode.title);
         } else {
-          return [...prev, episode.id];
+          return [...prev, episode.title];
         }
       });
     }
@@ -24,19 +25,17 @@ export function RightPanel({ setMessage, episodeData }) {
 
   return (
     <div
-      className="overflow-auto flex bg-[#242424] mx-4 mt-4 rounded-lg relative"
-      style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
+      className="overflow-auto flex bg-[#FFFFFF] border border-[#18181826] mr-4 mt-4 rounded-lg relative"
+      style={{ height: "calc(100vh - 80px)", maxHeigh: "calc(100vh - 80px)" }}
     >
-      <div className="w-64 rounded-lg  p-4 text-white">
+      <div className="w-[170px] rounded-lg  p-4 text-[#5D5D5D]">
         {episodes?.length == 0 && <div>Episodes will came here</div>}
         {episodes?.map((episode, idx) => (
-          <div key={episode.id} className="mb-2">
+          <div key={episode.title} className="mb-2">
             <button
               onClick={() => handleToggleEpisode(episode)}
-              className={`w-full flex items-center justify-between p-3 rounded-md ${
-                openEpisodes.includes(episode.id)
-                  ? "bg-gray-800 border border-teal-500/30"
-                  : "bg-gray-700 "
+              className={`w-full shadow-md flex items-center justify-between p-3 rounded-md bg-[#F3F3F3] ${
+                openEpisodes.includes(episode.title) ? " border border-[#181818] " : ""
               }`}
             >
               <span className="text-sm font-medium">{`Episode ${String(idx + 1).padStart(
@@ -47,19 +46,19 @@ export function RightPanel({ setMessage, episodeData }) {
                 <ChevronDown
                   size={18}
                   className={`transition-transform ${
-                    openEpisodes.includes(episode.id) ? "rotate-180" : ""
+                    openEpisodes.includes(episode.title) ? "rotate-180" : ""
                   }`}
                 />
               )}
             </button>
 
-            {openEpisodes.includes(episode.id) && episode.child && episode.child.length > 0 && (
-              <div className=" p-2 rounded-md bg-gray-800 border border-teal-500/30">
+            {openEpisodes.includes(episode.title) && episode.child && episode.child.length > 0 && (
+              <div className=" p-2 rounded-md bg-[#F3F3F3] border border-[#181818] shadow-md">
                 {episode.child.map((scene, index) => (
                   <div
                     onClick={() => setMessage(scene.prompt)}
                     key={index}
-                    className="py-2 text-sm text-[#D2D2D2] cursor-pointer"
+                    className="py-2 text-sm  cursor-pointer"
                   >
                     {"Scene " + (index + 1)}
                   </div>
