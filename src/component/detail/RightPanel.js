@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export function RightPanel({ setMessage, episodeData }) {
-  console.log("🚀 ~ RightPanel ~ episodeData:", episodeData);
   const [episodes, setEpisodes] = useState([]);
   useEffect(() => {
     setEpisodes(episodeData || []);
@@ -31,11 +30,13 @@ export function RightPanel({ setMessage, episodeData }) {
       <div className="w-[170px] rounded-lg  p-4 text-[#5D5D5D]">
         {episodes?.length == 0 && <div>Episodes will came here</div>}
         {episodes?.map((episode, idx) => (
-          <div key={episode.title} className="mb-2">
+          <div key={episode.title} className="mb-4">
             <button
               onClick={() => handleToggleEpisode(episode)}
-              className={`w-full shadow-md flex items-center justify-between p-3 rounded-md bg-[#F3F3F3] ${
-                openEpisodes.includes(episode.title) ? " border border-[#181818] " : ""
+              className={`w-full shadow-md flex items-center justify-between p-3   bg-[#F3F3F3] ${
+                openEpisodes.includes(episode.title)
+                  ? " border-t border-l border-r border-[#181818]  rounded-t-xl "
+                  : "rounded-xl"
               }`}
             >
               <span className="text-sm font-medium">{`Episode ${String(idx + 1).padStart(
@@ -44,7 +45,7 @@ export function RightPanel({ setMessage, episodeData }) {
               )}`}</span>
               {episode.child && episode.child.length > 0 && (
                 <ChevronDown
-                  size={18}
+                  size={24}
                   className={`transition-transform ${
                     openEpisodes.includes(episode.title) ? "rotate-180" : ""
                   }`}
@@ -53,7 +54,7 @@ export function RightPanel({ setMessage, episodeData }) {
             </button>
 
             {openEpisodes.includes(episode.title) && episode.child && episode.child.length > 0 && (
-              <div className=" p-2 rounded-md bg-[#F3F3F3] border border-[#181818] shadow-md">
+              <div className=" px-3 rounded-b-xl bg-[#F3F3F3] border-l border-r border-b border-[#181818] shadow-md">
                 {episode.child.map((scene, index) => (
                   <div
                     onClick={() => setMessage(scene.prompt)}

@@ -3,6 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { useRef } from "react";
 import RenderMarkdown from "../RenderMarkdown";
 import moment from "moment";
+import ThinkingAnimation from "../common/Thinking";
 export function LeftPanel({
   message,
   setMessage,
@@ -57,9 +58,13 @@ export function LeftPanel({
     <div className="w-[30%] p-4 flex flex-col gap-4 relative h-full">
       <div
         ref={responseContainerRef}
-        className="border border-[#FFFFFF26] rounded-lg  overflow-y-auto mb-[128px] w-full scrollbar-hide"
+        className="border relative border-[#FFFFFF26] rounded-lg  overflow-y-auto mb-[128px] w-full scrollbar-hide"
       >
         {renderChatMessages()}
+
+        <div className="sticky bottom-0 left-4 right-4 bg-[#f7f7f7]">
+          <ThinkingAnimation isThinking={isLoading} />
+        </div>
       </div>
 
       <div className="absolute bottom-24 left-4 right-4 overflow-x-auto scrollbar-hide">

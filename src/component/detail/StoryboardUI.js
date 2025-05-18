@@ -21,8 +21,8 @@ export default function StoryboardUI({ data, isLoading }) {
               <div className="absolute top-4 left-4 text-xs font-medium">
                 Shot {shot.episode_number}.{shot.shot_number}
               </div>
-              <button className="absolute bottom-4 right-4 bg-black bg-opacity-50 p-2 rounded-full">
-                <Pencil size={20} />
+              <button className="absolute bottom-4 right-4 bg-[#242424]  p-2 rounded">
+                <img src="/images/edit.svg" style={{ height: "16px", width: "16px" }} />
               </button>
             </div>
 
@@ -30,7 +30,14 @@ export default function StoryboardUI({ data, isLoading }) {
             <div className="flex flex-col flex-1 p-4">
               <p className="text-xs mb-6">{shot.description}</p>
 
-              <div className="border-t border-gray-700 py-2">
+              <div
+                style={{
+                  background:
+                    "linear-gradient(270deg, rgba(160, 249, 255, 0.4) 0%, rgba(169, 160, 255, 0.4) 100%)",
+                  height: "1.5px",
+                }}
+              ></div>
+              <div className="py-2">
                 <p className="text-xs">Dialogue: {shot.dialogue}</p>
               </div>
 

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import RenderMarkdown from "../RenderMarkdown";
 import CharacterGrid from "./CharacterGrid";
 import StoryboardUI from "./StoryboardUI";
+import LoadingPreview from "../common/LoadingPreview";
 export function MainPanel({
   activeTab,
   setActiveTab,
@@ -15,6 +16,39 @@ export function MainPanel({
   isLoading,
   isFullWidth,
 }) {
+  const customFeatures = [
+    {
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+      ),
+      text: "Set custom knowledge for every edit",
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M4 7v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2z"
+          />
+        </svg>
+      ),
+      text: "Connect Supabase for backend",
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"
+          />
+        </svg>
+      ),
+      text: "Collaborate at source, via GitHub",
+    },
+  ];
+
   const renderContent = () => {
     switch (activeTab) {
       case "Synopsis":
@@ -45,10 +79,12 @@ export function MainPanel({
               <h2 className="text-2xl font-bold mb-6">Script</h2>
               {scriptData ? (
                 <div className="text-[#5D5D5D]">
-                  <RenderMarkdown markdown={scriptData}></RenderMarkdown>
+                  <RenderMarkdown markdown={scriptData} />
                 </div>
+              ) : !isLoading ? (
+                <p className="text-[#5D5D5D]">No script data available yet.</p>
               ) : (
-                <p className="text-[5D5D5D]">No script data available yet.</p>
+                <LoadingPreview features={customFeatures} />
               )}
             </div>
           </div>
