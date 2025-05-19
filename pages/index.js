@@ -67,8 +67,8 @@ export default function VideoCreationUI() {
       className="flex text-black items-center justify-center w-full bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage: "url('/images/home/layout.png')",
-        height: "calc(100vh - 60px)",
-        maxHeigh: "calc(100vh - 60px)",
+        height: "calc(100vh - 50px)",
+        maxHeigh: "calc(100vh - 50px)",
       }}
     >
       <div className="w-full max-w-[760px] mt-10">

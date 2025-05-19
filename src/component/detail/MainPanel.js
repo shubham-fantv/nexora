@@ -15,6 +15,7 @@ export function MainPanel({
   storyboardData,
   isLoading,
   isFullWidth,
+  handleCreateVideo,
 }) {
   const customFeatures = [
     {
@@ -99,7 +100,11 @@ export function MainPanel({
       case "Storyboard":
         return (
           <div className="mb-6">
-            <StoryboardUI data={storyboardData} isLoading={isLoading} />
+            <StoryboardUI
+              data={storyboardData}
+              isLoading={isLoading}
+              handleCreateVideo={handleCreateVideo}
+            />
           </div>
         );
 

@@ -1,6 +1,6 @@
 const styles = {
   navbar: {
-    height: "60px",
+    height: "50px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -10,6 +10,7 @@ const styles = {
     zIndex: "99",
     padding: "0 40px",
     width: "100%",
+    // backgroundColor: "#F7F7F7",
     backgroundColor: "#FFF",
 
     "@media (max-width:767px)": {

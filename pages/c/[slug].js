@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { useRef } from "react";
-import RenderMarkdown from "../../src/component/RenderMarkdown";
+import { useMutation } from "react-query";
 import { LeftPanel } from "../../src/component/detail/LeftPanel";
 import { MainPanel } from "../../src/component/detail/MainPanel";
 import { RightPanel } from "../../src/component/detail/RightPanel";
-import { useMutation } from "react-query";
 import fetcher from "../../src/dataProvider";
-import Loader from "../../src/component/common/Loading/loading";
 import { quotes } from "../../src/utils/common";
 // Main App Component
 export default function ScriptWritingApp({ slug }) {
@@ -88,38 +84,42 @@ export default function ScriptWritingApp({ slug }) {
     return () => clearInterval(interval);
   }, []);
 
+  const handleCreateVideo = (item) => {};
+
   return (
-    <div
-      className="flex text-black "
-      style={{
-        height: "calc(100vh - 60px)",
-        maxHeigh: "calc(100vh - 60px)",
-      }}
-    >
-      <LeftPanel
-        message={message}
-        setMessage={setMessage}
-        leftSectionData={leftSection}
-        response={content}
-        sendMessage={sendMessage}
-        handleKeyPress={handleKeyPress}
-        isLoading={isLoading}
-        tabs={tabs}
+    <div className="relative flex text-black h-[90vh]">
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[512px] max-h-[512px] bg-no-repeat bg-center bg-contain pointer-events-none z-0"
+        style={{ backgroundImage: "url('/images/detail-layout.png')" }}
       />
 
-      <MainPanel
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        availableTabs={availableTabs}
-        synopsisData={synopsis}
-        scriptData={script}
-        characterData={character}
-        storyboardData={storyboard}
-        isLoading={isLoading}
-        isFullWidth={!!episodes?.length == 0}
-      />
+      <div className="relative flex flex-1 z-10">
+        <LeftPanel
+          message={message}
+          setMessage={setMessage}
+          leftSectionData={leftSection}
+          response={content}
+          sendMessage={sendMessage}
+          handleKeyPress={handleKeyPress}
+          isLoading={isLoading}
+          tabs={tabs}
+        />
 
-      {!episodes?.length == 0 && <RightPanel setMessage={setMessage} episodeData={episodes} />}
+        <MainPanel
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          availableTabs={availableTabs}
+          synopsisData={synopsis}
+          scriptData={script}
+          characterData={character}
+          storyboardData={storyboard}
+          isLoading={isLoading}
+          isFullWidth={!!episodes?.length == 0}
+          handleCreateVideo={handleCreateVideo}
+        />
+
+        {!episodes?.length == 0 && <RightPanel setMessage={setMessage} episodeData={episodes} />}
+      </div>
     </div>
   );
 }

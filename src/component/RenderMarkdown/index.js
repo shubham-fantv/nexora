@@ -12,9 +12,9 @@ const RenderMarkdown = ({ markdown }) => {
               h1: {
                 props: {
                   style: {
-                    fontSize: "2rem", // 32px
-                    lineHeight: "34px",
-                    fontWeight: "bold",
+                    fontSize: "1.5rem", // 24px
+                    fontWeight: "600",
+                    lineHeight: "150%",
                     margin: "1.5rem 0 1rem",
                   },
                 },
@@ -22,9 +22,9 @@ const RenderMarkdown = ({ markdown }) => {
               h2: {
                 props: {
                   style: {
-                    fontSize: "1.6875rem", // 27px
-                    lineHeight: "29px",
-                    fontWeight: "bold",
+                    fontSize: "1rem", // 16px
+                    fontWeight: "700",
+                    lineHeight: "150%",
                     margin: "1.25rem 0 0.75rem",
                   },
                 },
@@ -32,9 +32,9 @@ const RenderMarkdown = ({ markdown }) => {
               h3: {
                 props: {
                   style: {
-                    fontSize: "1.375rem", // 22px
-                    lineHeight: "24px",
+                    fontSize: "1rem", // 16px
                     fontWeight: "600",
+                    lineHeight: "150%",
                     margin: "1rem 0 0.5rem",
                   },
                 },
@@ -42,9 +42,9 @@ const RenderMarkdown = ({ markdown }) => {
               h4: {
                 props: {
                   style: {
-                    fontSize: "1.125rem", // 18px
-                    lineHeight: "20px",
+                    fontSize: "1rem", // 16px
                     fontWeight: "600",
+                    lineHeight: "150%",
                     margin: "1rem 0 0.5rem",
                   },
                 },
@@ -53,8 +53,8 @@ const RenderMarkdown = ({ markdown }) => {
                 props: {
                   style: {
                     fontSize: "0.875rem", // 14px
-                    lineHeight: "16px",
-                    fontWeight: "600",
+                    fontWeight: "500",
+                    lineHeight: "150%",
                     margin: "0.75rem 0 0.5rem",
                   },
                 },
@@ -62,9 +62,9 @@ const RenderMarkdown = ({ markdown }) => {
               h6: {
                 props: {
                   style: {
-                    fontSize: "0.75rem", // 12px
-
-                    fontWeight: "600",
+                    fontSize: "0.875rem", // 14px
+                    fontWeight: "400",
+                    lineHeight: "150%",
                     margin: "0.5rem 0 0.25rem",
                   },
                 },
@@ -73,9 +73,9 @@ const RenderMarkdown = ({ markdown }) => {
                 props: {
                   style: {
                     fontSize: "0.875rem", // 14px
-
                     margin: "0.5rem 0",
                     whiteSpace: "pre-line",
+                    lineHeight: "150%",
                   },
                 },
               },
@@ -85,7 +85,7 @@ const RenderMarkdown = ({ markdown }) => {
                     color: "#1e90ff",
                     textDecoration: "underline",
                     fontSize: "0.875rem",
-                    lineHeight: "16px",
+                    lineHeight: "150%",
                   },
                   target: "_blank",
                   rel: "noopener noreferrer",
@@ -97,7 +97,7 @@ const RenderMarkdown = ({ markdown }) => {
                     paddingLeft: "1.5rem",
                     marginBottom: "1rem",
                     fontSize: "0.875rem",
-                    lineHeight: "16px",
+                    lineHeight: "150%",
                   },
                 },
               },
@@ -107,7 +107,7 @@ const RenderMarkdown = ({ markdown }) => {
                     paddingLeft: "1.5rem",
                     marginBottom: "1rem",
                     fontSize: "0.875rem",
-                    lineHeight: "16px",
+                    lineHeight: "150%",
                   },
                 },
               },
@@ -116,7 +116,7 @@ const RenderMarkdown = ({ markdown }) => {
                   style: {
                     marginBottom: "0.25rem",
                     fontSize: "0.875rem",
-                    lineHeight: "16px",
+                    lineHeight: "150%",
                   },
                 },
               },
@@ -129,7 +129,7 @@ const RenderMarkdown = ({ markdown }) => {
                     fontStyle: "italic",
                     margin: "1rem 0",
                     fontSize: "0.875rem",
-                    lineHeight: "16px",
+                    lineHeight: "150%",
                   },
                 },
               },
@@ -142,7 +142,7 @@ const RenderMarkdown = ({ markdown }) => {
                     borderRadius: "4px",
                     fontFamily: "monospace",
                     fontSize: "0.75rem",
-                    lineHeight: "14px",
+                    lineHeight: "150%",
                   },
                 },
               },
@@ -154,7 +154,7 @@ const RenderMarkdown = ({ markdown }) => {
                     borderRadius: "6px",
                     overflowX: "auto",
                     fontSize: "0.75rem",
-                    lineHeight: "14px",
+                    lineHeight: "150%",
                     fontFamily: "monospace",
                     margin: "1rem 0",
                   },
@@ -172,7 +172,7 @@ const RenderMarkdown = ({ markdown }) => {
               strong: {
                 props: {
                   style: {
-                    fontWeight: "bold",
+                    fontWeight: "600",
                   },
                 },
               },

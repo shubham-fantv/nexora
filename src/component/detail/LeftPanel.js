@@ -36,7 +36,7 @@ export function LeftPanel({
                 <div className="w-6 h-6 rounded-full bg-pink-200 flex items-center justify-center text-gray-800 flex-shrink-0">
                   N
                 </div>
-                <p className="text-[#5D5D5D]">{item.sender.message}</p>
+                <p className="text-[#5D5D5D] text-base font-normal">{item.sender.message}</p>
               </div>
             </div>
           );
