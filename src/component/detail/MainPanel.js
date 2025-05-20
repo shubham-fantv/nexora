@@ -5,6 +5,9 @@ import RenderMarkdown from "../RenderMarkdown";
 import CharacterGrid from "./CharacterGrid";
 import StoryboardUI from "./StoryboardUI";
 import LoadingPreview from "../common/LoadingPreview";
+import fetcher from "../../dataProvider";
+import { useMutation } from "react-query";
+import { useRouter } from "next/router";
 export function MainPanel({
   activeTab,
   setActiveTab,
@@ -17,6 +20,26 @@ export function MainPanel({
   isFullWidth,
   handleCreateVideo,
 }) {
+  console.log("🚀 ~ storyboardData:", storyboardData);
+  const router = useRouter();
+  const [isVideoGeneration, setIsVideoGeneration] = useState(false);
+  const [storyboardFinal, setStoryboardFinal] = useState([]);
+
+  function mergeShotData(obj1 = [], obj2 = []) {
+    return obj1.map((shot) => {
+      const match = obj2?.find(
+        (item) =>
+          item.episode_number === shot.episode_number &&
+          item.scene_number === shot.scene_number &&
+          item.shot_number === shot.shot_number
+      );
+
+      return {
+        ...shot,
+        ...(match || {}), // merge if found
+      };
+    });
+  }
   const customFeatures = [
     {
       icon: (
@@ -49,6 +72,35 @@ export function MainPanel({
       text: "Collaborate at source, via GitHub",
     },
   ];
+
+  const { mutate: generateVideoApi } = useMutation(
+    (obj) => fetcher.post(`/merge_scene_videos`, obj),
+    {
+      onSuccess: (response) => {
+        console.log("🚀 ~ response:", response);
+        // let mergerData = mergeShotData(storyboardData, response?.video_clips);
+        // setStoryboardData(mergerData);
+        setIsVideoGeneration(false);
+      },
+      onError: (error) => {
+        setIsVideoGeneration(false);
+        console.error("Error generating video:", error);
+      },
+    }
+  );
+
+  const handleCreateAllVideo = (item) => {
+    setIsVideoGeneration(true);
+    generateVideoApi({
+      session_id: router?.query?.slug,
+      target_scenes: [
+        {
+          episode_number: storyboardData?.[0].episode_number,
+          scene_number: storyboardData?.[0]?.scene_number,
+        },
+      ],
+    });
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -99,12 +151,24 @@ export function MainPanel({
 
       case "Storyboard":
         return (
-          <div className="mb-6">
+          <div className="mb-10">
             <StoryboardUI
               data={storyboardData}
               isLoading={isLoading}
               handleCreateVideo={handleCreateVideo}
             />
+            <button
+              onClick={() => handleCreateAllVideo()}
+              className="h-[40px] w-[150px] rounded-lg m-4   float-end  flex justify-center items-center"
+              style={{ background: "linear-gradient(180deg, #A9A0FF -58.75%, #A0F9FF 155%)" }}
+              disabled={isVideoGeneration}
+            >
+              {isVideoGeneration ? (
+                <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black border-t-transparent rounded-full" />
+              ) : (
+                <>Create All</>
+              )}
+            </button>
           </div>
         );
 
