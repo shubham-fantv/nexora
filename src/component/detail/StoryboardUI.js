@@ -4,13 +4,11 @@ import { useMutation } from "react-query";
 import fetcher from "../../dataProvider";
 import { useRouter } from "next/router";
 
-export default function StoryboardUI({ data, isLoading }) {
+export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) {
   const router = useRouter();
   const [selectedVideo, setSelectedVideo] = useState();
   const [isVideoGeneration, setIsVideoGeneration] = useState(false);
   const [storyboardData, setStoryboardData] = useState([]);
-
-  console.log("🚀 ~ StoryboardUI ~ storyboardData:", storyboardData);
 
   useEffect(() => {
     setStoryboardData(data);
@@ -93,36 +91,37 @@ export default function StoryboardUI({ data, isLoading }) {
                 </button>
               </div>
 
-              {/* Content Section */}
-              <div className="flex flex-col flex-1 p-4">
-                <p className="text-xs mb-6">{shot.description}</p>
+              {!isFinalVideo && (
+                <div className="flex flex-col flex-1 p-4">
+                  <p className="text-xs mb-6">{shot.description}</p>
 
-                <div
-                  style={{
-                    background:
-                      "linear-gradient(270deg, rgba(160, 249, 255, 0.4) 0%, rgba(169, 160, 255, 0.4) 100%)",
-                    height: "1.5px",
-                  }}
-                ></div>
-                <div className="py-2">
-                  <p className="text-xs">Dialogue: {shot.dialogue}</p>
-                </div>
+                  <div
+                    style={{
+                      background:
+                        "linear-gradient(270deg, rgba(160, 249, 255, 0.4) 0%, rgba(169, 160, 255, 0.4) 100%)",
+                      height: "1.5px",
+                    }}
+                  ></div>
+                  <div className="py-2">
+                    <p className="text-xs">Dialogue: {shot.dialogue}</p>
+                  </div>
 
-                {/* Spacer to push the button to the bottom */}
-                <div className="mt-auto">
-                  <button
-                    onClick={() => handleCreateVideo(shot)}
-                    disabled={isVideoGeneration}
-                    className="w-full text-sm py-3 border-2 border-[#181818] flex justify-center  text-[#181818] rounded-lg text-center font-medium"
-                  >
-                    {isVideoGeneration && selectedVideo.created_at == shot.created_at ? (
-                      <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black border-t-transparent rounded-full" />
-                    ) : (
-                      <>Create</>
-                    )}
-                  </button>
+                  {/* Spacer to push the button to the bottom */}
+                  <div className="mt-auto">
+                    <button
+                      onClick={() => handleCreateVideo(shot)}
+                      disabled={isVideoGeneration}
+                      className="w-full text-sm py-3 border-2 border-[#181818] flex justify-center  text-[#181818] rounded-lg text-center font-medium"
+                    >
+                      {isVideoGeneration && selectedVideo.created_at == shot.created_at ? (
+                        <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black border-t-transparent rounded-full" />
+                      ) : (
+                        <>Create</>
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ))}
       </div>

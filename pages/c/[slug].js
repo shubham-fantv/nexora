@@ -31,11 +31,30 @@ export default function ScriptWritingApp({ slug }) {
   ]);
 
   const [episodes, setEpisodes] = useState("");
+  const [finalVideo, setFinalVideo] = useState("");
+
+  const { mutate: getActiveTab } = useMutation((obj) => fetcher.post(`/get_destination`, obj), {
+    onSuccess: (response) => {
+      setActiveTab(response?.destination);
+    },
+    onError: (error) => {
+      alert(error.response.data.message);
+      console.error("Error generating video:", error);
+    },
+  });
 
   const { mutate: generateVideoApi } = useMutation((obj) => fetcher.post(`/chat/send`, obj), {
     onSuccess: (response) => {
       setIsLoading(false);
 
+      if (response?.final_video?.length > 0) {
+        setAvailableTabs((prevTabs) => {
+          if (!prevTabs.includes("Videos")) {
+            return [...prevTabs, "Videos"];
+          }
+          return prevTabs;
+        });
+      }
       updateStateFromParsedData(response);
     },
     onError: (error) => {
@@ -50,6 +69,7 @@ export default function ScriptWritingApp({ slug }) {
     setIsLoading(true);
     setContent("");
     generateVideoApi({ session_id: slug, prompt: message });
+    getActiveTab({ session_id: slug, prompt: message });
   };
 
   const updateStateFromParsedData = (data) => {
@@ -61,6 +81,7 @@ export default function ScriptWritingApp({ slug }) {
     if (data.character !== undefined) setCharacter(data.character);
     if (data.storyboard !== undefined) setStoryboard(data.storyboard);
     if (data.episodes !== undefined) setEpisodes(data.episodes);
+    if (data.final_video !== undefined) setFinalVideo(data.final_video);
   };
 
   useEffect(() => {
@@ -116,6 +137,8 @@ export default function ScriptWritingApp({ slug }) {
           isLoading={isLoading}
           isFullWidth={!!episodes?.length == 0}
           handleCreateVideo={handleCreateVideo}
+          finalVideoData={finalVideo}
+          setFinalVideo={setFinalVideo}
         />
 
         {!episodes?.length == 0 && <RightPanel setMessage={setMessage} episodeData={episodes} />}

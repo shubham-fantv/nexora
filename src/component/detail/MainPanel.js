@@ -19,8 +19,9 @@ export function MainPanel({
   isLoading,
   isFullWidth,
   handleCreateVideo,
+  finalVideoData,
+  setFinalVideo,
 }) {
-  console.log("🚀 ~ storyboardData:", storyboardData);
   const router = useRouter();
   const [isVideoGeneration, setIsVideoGeneration] = useState(false);
   const [storyboardFinal, setStoryboardFinal] = useState([]);
@@ -36,7 +37,7 @@ export function MainPanel({
 
       return {
         ...shot,
-        ...(match || {}), // merge if found
+        ...(match || {}),
       };
     });
   }
@@ -77,9 +78,7 @@ export function MainPanel({
     (obj) => fetcher.post(`/merge_scene_videos`, obj),
     {
       onSuccess: (response) => {
-        console.log("🚀 ~ response:", response);
-        // let mergerData = mergeShotData(storyboardData, response?.video_clips);
-        // setStoryboardData(mergerData);
+        setFinalVideo(response?.merged_videos);
         setIsVideoGeneration(false);
       },
       onError: (error) => {
@@ -93,12 +92,8 @@ export function MainPanel({
     setIsVideoGeneration(true);
     generateVideoApi({
       session_id: router?.query?.slug,
-      target_scenes: [
-        {
-          episode_number: storyboardData?.[0].episode_number,
-          scene_number: storyboardData?.[0]?.scene_number,
-        },
-      ],
+      episode_number: storyboardData?.[0].episode_number,
+      scene_number: storyboardData?.[0]?.scene_number,
     });
   };
 
@@ -112,12 +107,15 @@ export function MainPanel({
           >
             <div className="mb-6">
               <h2 className="text-2xl font-bold mb-6">Synopsis</h2>
-              {synopsisData ? (
+
+              {isLoading ? (
+                <LoadingPreview features={customFeatures} />
+              ) : synopsisData ? (
                 <div className="text-[#5D5D5D]">
                   <RenderMarkdown markdown={synopsisData} />
                 </div>
               ) : (
-                <p className="text-[5D5D5D]">No synopsis data available yet.</p>
+                <p className="text-[#5D5D5D]">No synopsis data available yet.</p>
               )}
             </div>
           </div>
@@ -130,14 +128,15 @@ export function MainPanel({
           >
             <div className="mb-6">
               <h2 className="text-2xl font-bold mb-6">Script</h2>
-              {scriptData ? (
+
+              {isLoading ? (
+                <LoadingPreview features={customFeatures} />
+              ) : scriptData ? (
                 <div className="text-[#5D5D5D]">
                   <RenderMarkdown markdown={scriptData} />
                 </div>
-              ) : !isLoading ? (
-                <p className="text-[#5D5D5D]">No script data available yet.</p>
               ) : (
-                <LoadingPreview features={customFeatures} />
+                <p className="text-[#5D5D5D]">No script data available yet.</p>
               )}
             </div>
           </div>
@@ -169,6 +168,17 @@ export function MainPanel({
                 <>Create All</>
               )}
             </button>
+          </div>
+        );
+      case "Videos":
+        return (
+          <div className="mb-10">
+            <StoryboardUI
+              data={finalVideoData}
+              isLoading={isLoading}
+              handleCreateVideo={handleCreateVideo}
+              isFinalVideo={true}
+            />
           </div>
         );
 
