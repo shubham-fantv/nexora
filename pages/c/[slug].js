@@ -10,6 +10,7 @@ export default function ScriptWritingApp({ slug }) {
   const [activeTab, setActiveTab] = useState("Synopsis");
 
   const [message, setMessage] = useState("");
+  console.log("🚀 ~ ScriptWritingApp ~ message:", message);
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -60,12 +61,12 @@ export default function ScriptWritingApp({ slug }) {
     },
   });
 
-  const sendMessage = async () => {
+  const sendMessage = async (prompt) => {
     // if (!message.trim()) return;
     setIsLoading(true);
     setContent("");
-    generateVideoApi({ session_id: slug, prompt: message });
-    getActiveTab({ session_id: slug, prompt: message });
+    generateVideoApi({ session_id: slug, prompt: prompt || message });
+    getActiveTab({ session_id: slug, prompt: prompt || message });
   };
 
   const updateStateFromParsedData = (data) => {
