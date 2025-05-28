@@ -23,12 +23,7 @@ export default function ScriptWritingApp({ slug }) {
   const [script, setScript] = useState("");
   const [character, setCharacter] = useState([]);
   const [storyboard, setStoryboard] = useState("");
-  const [availableTabs, setAvailableTabs] = useState([
-    "Synopsis",
-    "Script",
-    "Character",
-    "Storyboard",
-  ]);
+  const [availableTabs, setAvailableTabs] = useState(["Script", "Character", "Storyboard"]);
 
   const [episodes, setEpisodes] = useState("");
   const [finalVideo, setFinalVideo] = useState("");
@@ -56,6 +51,7 @@ export default function ScriptWritingApp({ slug }) {
         });
       }
       updateStateFromParsedData(response);
+      setMessage("");
     },
     onError: (error) => {
       alert(error.response.data.message);

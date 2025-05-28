@@ -3,12 +3,12 @@ import { useState, useEffect, useRef } from "react";
 export default function LoadingPreview({
   logoSrc = "/heart-logo.svg",
   features = [
-    { icon: "🎓", text: "Set custom knowledge for every edit" },
-    { icon: "🗄️", text: "Connect Supabase for backend" },
-    { icon: "💻", text: "Collaborate at source, via GitHub" },
-    { icon: "🎓", text: "Set custom knowledge for every edit" },
-    { icon: "🗄️", text: "Connect Supabase for backend" },
-    { icon: "💻", text: "Collaborate at source, via GitHub" },
+    { icon: "🤖", text: "Generate entire web series episodes using AI" },
+    { icon: "🎬", text: "Customize storyline, genre, and characters" },
+    { icon: "🧠", text: "Train AI with your own scripts or ideas" },
+    { icon: "🌐", text: "Collaborate and share via GitHub or web platform" },
+    { icon: "📦", text: "Store series data securely with Supabase" },
+    { icon: "⚡", text: "Real-time editing and instant previews" },
   ],
   textColor = "#6b6b6b",
   loadingText = "Spinning up preview...",

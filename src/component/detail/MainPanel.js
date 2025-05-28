@@ -106,10 +106,10 @@ export function MainPanel({
             style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
           >
             <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-6">Synopsis</h2>
-
               {isLoading ? (
-                <LoadingPreview features={customFeatures} />
+                <div className="mt-10">
+                  <LoadingPreview />
+                </div>
               ) : synopsisData ? (
                 <div className="text-[#5D5D5D]">
                   <RenderMarkdown markdown={synopsisData} />
@@ -127,10 +127,10 @@ export function MainPanel({
             style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
           >
             <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-6">Script</h2>
-
               {isLoading ? (
-                <LoadingPreview features={customFeatures} />
+                <div className="mt-10">
+                  <LoadingPreview />
+                </div>
               ) : scriptData ? (
                 <div className="text-[#5D5D5D]">
                   <RenderMarkdown markdown={scriptData} />

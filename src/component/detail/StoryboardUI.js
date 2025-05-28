@@ -43,7 +43,6 @@ export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) 
   });
 
   const handleCreateVideo = (item) => {
-    console.log("🚀 ~ handleCreateVideo ~ item:", item);
     setSelectedVideo(item);
     setIsVideoGeneration(true);
     generateVideoApi({

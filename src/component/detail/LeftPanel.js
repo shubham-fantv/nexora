@@ -17,7 +17,7 @@ export function LeftPanel({
   const responseContainerRef = useRef(null);
   const [staticTabs, setStaticTabs] = useState(["Create a detailed script", "Create Characters"]);
   useEffect(() => {
-    setStaticTabs([...tabs, ...staticTabs]);
+    setStaticTabs(tabs);
   }, [tabs]);
 
   useEffect(() => {
@@ -71,7 +71,10 @@ export function LeftPanel({
         <div className="flex gap-2 w-max whitespace-nowrap">
           {staticTabs.map((item, i) => (
             <button
-              onClick={() => setMessage(item)}
+              onClick={() => {
+                setMessage(item);
+                sendMessage();
+              }}
               key={i}
               className="border border-[#18181826] bg-[#FFF] rounded-md px-4 py-2 text-sm hover:bg-gray-700/50 transition-colors"
             >
