@@ -10,7 +10,6 @@ export default function ScriptWritingApp({ slug }) {
   const [activeTab, setActiveTab] = useState("Synopsis");
 
   const [message, setMessage] = useState("");
-  console.log("🚀 ~ ScriptWritingApp ~ message:", message);
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,6 +21,8 @@ export default function ScriptWritingApp({ slug }) {
   const [tabs, setTabs] = useState([]);
   const [synopsis, setSynopsis] = useState("");
   const [script, setScript] = useState("");
+  const [prevScript, setPrevScript] = useState("");
+  const [nextScript, setNextScript] = useState("");
   const [character, setCharacter] = useState([]);
   const [storyboard, setStoryboard] = useState("");
   const [availableTabs, setAvailableTabs] = useState(["Script", "Character", "Storyboard"]);
@@ -75,6 +76,8 @@ export default function ScriptWritingApp({ slug }) {
     if (data.tabs !== undefined) setTabs(data.tabs);
     if (data.synopsis !== undefined) setSynopsis(data.synopsis);
     if (data.script !== undefined) setScript(data.script);
+    if (data.next_script !== undefined) setNextScript(data.next_script);
+    if (data.prev_script !== undefined) setPrevScript(data.prev_script);
     if (data.character !== undefined) setCharacter(data.character);
     if (data.storyboard !== undefined) setStoryboard(data.storyboard);
     if (data.episodes !== undefined) setEpisodes(data.episodes);
@@ -129,6 +132,8 @@ export default function ScriptWritingApp({ slug }) {
           availableTabs={availableTabs}
           synopsisData={synopsis}
           scriptData={script}
+          prevScript={prevScript}
+          nextScript={nextScript}
           characterData={character}
           storyboardData={storyboard}
           isLoading={isLoading}
@@ -136,6 +141,7 @@ export default function ScriptWritingApp({ slug }) {
           handleCreateVideo={handleCreateVideo}
           finalVideoData={finalVideo}
           setFinalVideo={setFinalVideo}
+          setScriptData={setScript}
         />
 
         {!episodes?.length == 0 && <RightPanel setMessage={setMessage} episodeData={episodes} />}
