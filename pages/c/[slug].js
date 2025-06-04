@@ -25,6 +25,7 @@ export default function ScriptWritingApp({ slug }) {
   const [nextScript, setNextScript] = useState("");
   const [character, setCharacter] = useState([]);
   const [storyboard, setStoryboard] = useState("");
+  const [prevPrompt, setPrevPrompt] = useState("");
   const [availableTabs, setAvailableTabs] = useState(["Script", "Character", "Storyboard"]);
 
   const [episodes, setEpisodes] = useState("");
@@ -62,10 +63,32 @@ export default function ScriptWritingApp({ slug }) {
     },
   });
 
+  const { mutate: loadMore } = useMutation((obj) => fetcher.post(`/chat/action`, obj), {
+    onSuccess: (response) => {
+      setIsLoading(false);
+      if (response?.final_video?.length > 0) {
+        setAvailableTabs((prevTabs) => {
+          if (!prevTabs.includes("Videos")) {
+            return [...prevTabs, "Videos"];
+          }
+          return prevTabs;
+        });
+      }
+      updateStateFromParsedData(response);
+      setMessage("");
+    },
+    onError: (error) => {
+      alert(error.response.data.message);
+      setIsLoading(false);
+      console.error("Error generating video:", error);
+    },
+  });
+
   const sendMessage = async (prompt) => {
     // if (!message.trim()) return;
     setIsLoading(true);
     setContent("");
+    setPrevPrompt(prompt || message);
     generateVideoApi({ session_id: slug, prompt: prompt || message });
     getActiveTab({ session_id: slug, prompt: prompt || message });
   };
@@ -107,6 +130,14 @@ export default function ScriptWritingApp({ slug }) {
 
   const handleCreateVideo = (item) => {};
 
+  const handleLoadMore = (type) => {
+    let obj = {
+      session_id: slug,
+      prompt: prompt || message || prevPrompt,
+      action: type,
+    };
+    loadMore(obj);
+  };
   return (
     <div className="relative flex text-black h-[90vh]">
       <div
@@ -142,6 +173,7 @@ export default function ScriptWritingApp({ slug }) {
           finalVideoData={finalVideo}
           setFinalVideo={setFinalVideo}
           setScriptData={setScript}
+          handleLoadMore={handleLoadMore}
         />
 
         {!episodes?.length == 0 && <RightPanel setMessage={setMessage} episodeData={episodes} />}
