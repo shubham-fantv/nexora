@@ -47,7 +47,6 @@ const styles = {
         textDecoration: "none",
         display: "flex",
         marginRight: "80px",
-        background: "#000",
         borderRadius: "12px",
 
         "@media (max-width:767px)": {

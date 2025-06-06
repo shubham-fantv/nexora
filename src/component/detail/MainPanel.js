@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { useRef } from "react";
 import RenderMarkdown from "../RenderMarkdown";
 import CharacterGrid from "./CharacterGrid";
 import StoryboardUI from "./StoryboardUI";
@@ -8,7 +6,7 @@ import LoadingPreview from "../common/LoadingPreview";
 import fetcher from "../../dataProvider";
 import { useMutation } from "react-query";
 import { useRouter } from "next/router";
-import ScriptViewer from "../common/ScriptViewer";
+import LoadingMarquee from "../common/LoadingMarquee";
 
 export function MainPanel({
   activeTab,
@@ -28,7 +26,6 @@ export function MainPanel({
   setScriptData,
   handleLoadMore,
 }) {
-  console.log("🚀 ~ activeTab:", activeTab, scriptData.length);
   const router = useRouter();
   const [isVideoGeneration, setIsVideoGeneration] = useState(false);
   const [storyboardFinal, setStoryboardFinal] = useState([]);
@@ -52,7 +49,6 @@ export function MainPanel({
     }
   };
 
-  // Get available navigation options
   const canGoPrev = () => {
     return currentPosition === 0 ? !!prevScript : true; // Can always go prev unless we're at prevScript and no more prev
   };
@@ -60,56 +56,6 @@ export function MainPanel({
   const canGoNext = () => {
     return currentPosition === 0 ? !!nextScript : true; // Can always go next unless we're at nextScript and no more next
   };
-
-  function mergeShotData(obj1 = [], obj2 = []) {
-    return obj1.map((shot) => {
-      const match = obj2?.find(
-        (item) =>
-          item.episode_number === shot.episode_number &&
-          item.scene_number === shot.scene_number &&
-          item.shot_number === shot.shot_number
-      );
-
-      return {
-        ...shot,
-        ...(match || {}),
-      };
-    });
-  }
-
-  const customFeatures = [
-    {
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-        </svg>
-      ),
-      text: "Set custom knowledge for every edit",
-    },
-    {
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24">
-          <path
-            fill="currentColor"
-            d="M4 7v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2z"
-          />
-        </svg>
-      ),
-      text: "Connect Supabase for backend",
-    },
-    {
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24">
-          <path
-            fill="currentColor"
-            d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"
-          />
-        </svg>
-      ),
-      text: "Collaborate at source, via GitHub",
-    },
-  ];
-
   const { mutate: generateVideoApi } = useMutation(
     (obj) => fetcher.post(`/merge_scene_videos`, obj),
     {
@@ -135,28 +81,24 @@ export function MainPanel({
 
   const handlePrevScript = () => {
     if (!canGoPrev() || isTransitioning) return;
-
-    handleLoadMore("previous");
     setIsTransitioning(true);
 
-    // First, update position immediately so the correct content loads
     let newPosition = currentPosition;
     if (currentPosition === 0) {
-      newPosition = -1; // Moving from scriptData to prevScript
+      newPosition = -1;
     } else if (currentPosition === 1) {
-      newPosition = 0; // Moving from nextScript back to scriptData
+      newPosition = 0;
+    } else {
+      handleLoadMore("previous");
     }
 
-    // Start with the slide coming from the left (off-screen)
-    setSlideOffset(-100);
+    setSlideOffset(-500);
     setCurrentPosition(newPosition);
 
-    // Immediately trigger the slide-in animation
     setTimeout(() => {
-      setSlideOffset(0); // Slide into center position
+      setSlideOffset(0);
     }, 10);
 
-    // Complete the transition
     setTimeout(() => {
       setIsTransitioning(false);
     }, 350);
@@ -164,52 +106,25 @@ export function MainPanel({
 
   const handleNextScript = () => {
     if (!canGoNext() || isTransitioning) return;
-    handleLoadMore("next");
     setIsTransitioning(true);
-
-    // First, update position immediately so the correct content loads
     let newPosition = currentPosition;
     if (currentPosition === 0) {
-      newPosition = 1; // Moving from scriptData to nextScript
+      newPosition = 1;
     } else if (currentPosition === -1) {
-      newPosition = 0; // Moving from prevScript back to scriptData
+      newPosition = 0;
+    } else {
+      handleLoadMore("next");
     }
-
-    // Start with the slide coming from the right (off-screen)
     setSlideOffset(100);
     setCurrentPosition(newPosition);
 
-    // Immediately trigger the slide-in animation
     setTimeout(() => {
-      setSlideOffset(0); // Slide into center position
+      setSlideOffset(0);
     }, 10);
 
-    // Complete the transition
     setTimeout(() => {
       setIsTransitioning(false);
     }, 350);
-  };
-
-  // Get content for each slide position
-  const getSlideContent = (slideType) => {
-    switch (slideType) {
-      case "left":
-        // Left slide shows the previous available script
-        if (currentPosition === 0) return prevScript;
-        if (currentPosition === 1) return scriptData;
-        if (currentPosition === -1) return null; // No more previous
-        break;
-      case "center":
-        // Center slide shows current active script
-        return getCurrentScript();
-      case "right":
-        // Right slide shows the next available script
-        if (currentPosition === 0) return nextScript;
-        if (currentPosition === -1) return scriptData;
-        if (currentPosition === 1) return null; // No more next
-        break;
-    }
-    return null;
   };
 
   const renderContent = () => {
@@ -239,7 +154,7 @@ export function MainPanel({
         return (
           <div
             className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-lg"
-            style={{ height: "calc(100vh - 60px)", maxHeight: "calc(100vh - 60px)" }}
+            style={{ height: "100%", maxHeight: "100%" }}
           >
             {/* Previous Button */}
             <button
@@ -250,7 +165,7 @@ export function MainPanel({
               disabled={!canGoPrev() || isTransitioning}
             >
               <div
-                className={`w-12 h-12 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm ${
+                className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-xs ${
                   canGoPrev() && !isTransitioning ? "group-hover:bg-black/70" : ""
                 } transition-colors`}
               >
@@ -269,7 +184,6 @@ export function MainPanel({
                 </svg>
               </div>
             </button>
-
             {/* Next Button */}
             <button
               onClick={handleNextScript}
@@ -279,7 +193,7 @@ export function MainPanel({
               disabled={!canGoNext() || isTransitioning}
             >
               <div
-                className={`w-12 h-12 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm ${
+                className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm ${
                   canGoNext() && !isTransitioning ? "group-hover:bg-black/70" : ""
                 } transition-colors`}
               >
@@ -298,7 +212,6 @@ export function MainPanel({
                 </svg>
               </div>
             </button>
-
             {/* Carousel Container */}
             <div className="relative w-full h-full overflow-hidden">
               {/* Current Content Slide */}
@@ -312,7 +225,7 @@ export function MainPanel({
                 }}
               >
                 <div className="p-6 overflow-auto h-full">
-                  {isLoading ? (
+                  {isLoading && !scriptData ? (
                     <div className="mt-10">
                       <LoadingPreview />
                     </div>
@@ -339,24 +252,12 @@ export function MainPanel({
                 }}
               />
             </div>
-
-            {/* Optional: Position Indicator */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full">
-              <div
-                className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                  currentPosition === -1 ? "bg-black scale-125" : "bg-gray-300"
-                }`}
-              />
-              <div
-                className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                  currentPosition === 0 ? "bg-black scale-125" : "bg-gray-300"
-                }`}
-              />
-              <div
-                className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                  currentPosition === 1 ? "bg-black scale-125" : "bg-gray-300"
-                }`}
-              />
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 bg-white/80  px-3 py-1 ">
+              {isLoading && scriptData && (
+                <div className="mt-1  w-full bg-[#FFF]">
+                  <LoadingMarquee />
+                </div>
+              )}
             </div>
           </div>
         );
@@ -413,10 +314,7 @@ export function MainPanel({
   return (
     <div className={`${isFullWidth ? "w-[70%]" : "w-[60%]"} flex flex-col mr-2`}>
       {/* Main Content */}
-      <div
-        className="overflow-auto  relative scrollbar-hide"
-        style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
-      >
+      <div className="overflow-auto h-screen  sticky scrollbar-hide">
         <div className="flex gap-2 py-4 overflow-x-auto scrollbar-hide">
           {availableTabs.map((tab) => (
             <button
@@ -432,7 +330,7 @@ export function MainPanel({
             </button>
           ))}
         </div>
-        {renderContent()}
+        <div style={{ height: "90%" }}>{renderContent()}</div>
       </div>
     </div>
   );

@@ -26,6 +26,12 @@ export function LeftPanel({
     }
   }, [content, leftSectionData]);
 
+  const handleClickPrompt = (item) => {
+    if (!isLoading) {
+      setMessage((prev) => item);
+      sendMessage(item);
+    }
+  };
   const renderChatMessages = () => {
     if (leftSectionData && leftSectionData.length > 0) {
       return leftSectionData.map((item, index) => {
@@ -71,10 +77,7 @@ export function LeftPanel({
         <div className="flex gap-2 w-max whitespace-nowrap">
           {staticTabs.map((item, i) => (
             <button
-              onClick={() => {
-                setMessage((prev) => item);
-                sendMessage(item);
-              }}
+              onClick={() => handleClickPrompt(item)}
               key={i}
               className="border border-[#18181826] bg-[#FFF] rounded-md px-4 py-2 text-sm hover:bg-gray-700/50 transition-colors"
             >

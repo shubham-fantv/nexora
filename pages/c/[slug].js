@@ -12,6 +12,7 @@ export default function ScriptWritingApp({ slug }) {
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadMore, setIsLoadMore] = useState(false);
 
   const [content, setContent] = useState("");
   const [buffer, setBuffer] = useState("");
@@ -26,6 +27,8 @@ export default function ScriptWritingApp({ slug }) {
   const [character, setCharacter] = useState([]);
   const [storyboard, setStoryboard] = useState("");
   const [prevPrompt, setPrevPrompt] = useState("");
+  const [prevClickCount, setPrevClickCount] = useState(0);
+  const [nextClickCount, setNextClickCount] = useState(0);
   const [availableTabs, setAvailableTabs] = useState(["Script", "Character", "Storyboard"]);
 
   const [episodes, setEpisodes] = useState("");
@@ -76,16 +79,17 @@ export default function ScriptWritingApp({ slug }) {
       }
       updateStateFromParsedData(response);
       setMessage("");
+      setIsLoadMore(false);
     },
     onError: (error) => {
       alert(error.response.data.message);
       setIsLoading(false);
+      setIsLoadMore(false);
       console.error("Error generating video:", error);
     },
   });
 
-  const sendMessage = async (prompt) => {
-    // if (!message.trim()) return;
+  const sendMessage = async (item) => {
     setIsLoading(true);
     setContent("");
     setPrevPrompt(prompt || message);
@@ -94,7 +98,7 @@ export default function ScriptWritingApp({ slug }) {
   };
 
   const updateStateFromParsedData = (data) => {
-    if (data.prompt !== undefined) setPrompt(data.prompt);
+    // if (data.prompt !== undefined) setPrompt(data.prompt);
     if (data.left_section !== undefined) setLeftSection(data.left_section);
     if (data.tabs !== undefined) setTabs(data.tabs);
     if (data.synopsis !== undefined) setSynopsis(data.synopsis);
@@ -131,13 +135,27 @@ export default function ScriptWritingApp({ slug }) {
   const handleCreateVideo = (item) => {};
 
   const handleLoadMore = (type) => {
-    let obj = {
-      session_id: slug,
-      prompt: prompt || message || prevPrompt,
-      action: type,
-    };
-    loadMore(obj);
+    if (!isLoadMore) {
+      let obj = {
+        session_id: slug,
+        prompt: prompt || message || prevPrompt,
+        action: type,
+      };
+      setIsLoadMore(true);
+      setIsLoading(true);
+      loadMore(obj);
+    }
   };
+
+  console.log(
+    `🚀 ~ sendMessage ~ { session_id: slug, prompt: prompt=>`,
+    prompt,
+    "==>message",
+    message,
+    "prevPrompt==>",
+    prevPrompt
+  );
+
   return (
     <div className="relative flex text-black h-[90vh]">
       <div

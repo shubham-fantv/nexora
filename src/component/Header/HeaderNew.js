@@ -29,7 +29,7 @@ const HeaderNew = ({ app }) => {
                   <img
                     src={"/images/logo.svg"}
                     alt="FanTV Logo"
-                    width={40}
+                    width={170}
                     loading="eager"
                     decoding="async"
                   />
