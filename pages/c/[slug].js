@@ -98,7 +98,7 @@ export default function ScriptWritingApp({ slug }) {
   };
 
   const updateStateFromParsedData = (data) => {
-    // if (data.prompt !== undefined) setPrompt(data.prompt);
+    if (data.prompt !== undefined) setPrompt(data.prompt);
     if (data.left_section !== undefined) setLeftSection(data.left_section);
     if (data.tabs !== undefined) setTabs(data.tabs);
     if (data.synopsis !== undefined) setSynopsis(data.synopsis);
@@ -141,6 +141,7 @@ export default function ScriptWritingApp({ slug }) {
         prompt: prompt || message || prevPrompt,
         action: type,
       };
+      setMessage(prompt || message || prevPrompt);
       setIsLoadMore(true);
       setIsLoading(true);
       loadMore(obj);
@@ -185,7 +186,9 @@ export default function ScriptWritingApp({ slug }) {
           handleLoadMore={handleLoadMore}
         />
 
-        {!episodes?.length == 0 && <RightPanel setMessage={setMessage} episodeData={episodes} />}
+        {!episodes?.length == 0 && (
+          <RightPanel setMessage={setMessage} episodeData={episodes} sendMessage={sendMessage} />
+        )}
       </div>
     </div>
   );

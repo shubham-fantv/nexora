@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-export function RightPanel({ setMessage, episodeData }) {
+export function RightPanel({ setMessage, episodeData, sendMessage }) {
   const [episodes, setEpisodes] = useState([]);
   useEffect(() => {
     setEpisodes(episodeData || []);
@@ -11,6 +11,7 @@ export function RightPanel({ setMessage, episodeData }) {
 
   const handleToggleEpisode = (episode) => {
     setMessage(episode?.prompt);
+    sendMessage(episode?.prompt);
     if (episode.child && episode.child.length > 0) {
       setOpenEpisodes((prev) => {
         if (prev.includes(episode.title)) {
@@ -57,7 +58,9 @@ export function RightPanel({ setMessage, episodeData }) {
               <div className=" px-3 rounded-b-xl bg-[#F3F3F3] border-l border-r border-b border-[#181818] shadow-md">
                 {episode.child.map((scene, index) => (
                   <div
-                    onClick={() => setMessage(scene.prompt)}
+                    onClick={() => {
+                      setMessage(scene.prompt), sendMessage(scene.prompt);
+                    }}
                     key={index}
                     className="py-2 text-sm  cursor-pointer"
                   >
