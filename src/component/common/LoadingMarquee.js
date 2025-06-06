@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Marquee from "react-fast-marquee";
 
 export default function LoadingMarquee({
-  logoSrc = "/heart-logo.svg",
   features = [
     { icon: "🤖", text: "Generate entire web series episodes using AI" },
     { icon: "🎬", text: "Customize storyline, genre, and characters" },
@@ -14,6 +13,7 @@ export default function LoadingMarquee({
   textColor = "#6b6b6b",
   loadingText = "Spinning up preview...",
   gradientColor = "#FFF",
+  calledPrompt,
 }) {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -51,7 +51,10 @@ export default function LoadingMarquee({
             </div>
           ))}
         </Marquee>
-        <div className="animate-spin w-8 h-8 border-2 border-black flex justify-center m-auto border-t-transparent rounded-full" />
+        <div className="flex justify-center m-auto">
+          <div className="pr-5">{calledPrompt}</div>
+          <div className="animate-spin w-8 h-8 border-2 border-black  border-t-transparent rounded-full" />
+        </div>
       </div>
     </div>
   );

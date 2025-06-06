@@ -15,7 +15,6 @@ export default function ScriptWritingApp({ slug }) {
   const [isLoadMore, setIsLoadMore] = useState(false);
 
   const [content, setContent] = useState("");
-  const [buffer, setBuffer] = useState("");
   const [subTitle, setSubTitle] = useState("");
   const [prompt, setPrompt] = useState("");
   const [leftSection, setLeftSection] = useState();
@@ -27,8 +26,8 @@ export default function ScriptWritingApp({ slug }) {
   const [character, setCharacter] = useState([]);
   const [storyboard, setStoryboard] = useState("");
   const [prevPrompt, setPrevPrompt] = useState("");
-  const [prevClickCount, setPrevClickCount] = useState(0);
-  const [nextClickCount, setNextClickCount] = useState(0);
+  const [currEpisode, setCurrEpisode] = useState(null);
+  const [currScene, setCurrScene] = useState(null);
   const [availableTabs, setAvailableTabs] = useState(["Script", "Character", "Storyboard"]);
 
   const [episodes, setEpisodes] = useState("");
@@ -92,9 +91,9 @@ export default function ScriptWritingApp({ slug }) {
   const sendMessage = async (item) => {
     setIsLoading(true);
     setContent("");
-    setPrevPrompt(item || message || prompt);
-    generateVideoApi({ session_id: slug, prompt: item || message || prompt });
-    getActiveTab({ session_id: slug, prompt: item || message || prompt });
+    setPrevPrompt(item || message);
+    generateVideoApi({ session_id: slug, prompt: item || message });
+    getActiveTab({ session_id: slug, prompt: item || message });
   };
 
   const updateStateFromParsedData = (data) => {
@@ -109,6 +108,8 @@ export default function ScriptWritingApp({ slug }) {
     if (data.storyboard !== undefined) setStoryboard(data.storyboard);
     if (data.episodes !== undefined) setEpisodes(data.episodes);
     if (data.final_video !== undefined) setFinalVideo(data.final_video);
+    if (data.curr_scene !== undefined) setCurrScene(data.curr_scene);
+    if (data.curr_episode !== undefined) setCurrEpisode(data.curr_episode);
   };
 
   useEffect(() => {
@@ -134,24 +135,10 @@ export default function ScriptWritingApp({ slug }) {
 
   const handleCreateVideo = (item) => {};
 
-  const handleLoadMore = (type) => {
-    if (!isLoadMore) {
-      let obj = {
-        session_id: slug,
-        prompt: prompt || message || prevPrompt,
-        action: type,
-      };
-      setMessage(prompt || message || prevPrompt);
-      setIsLoadMore(true);
-      setIsLoading(true);
-      loadMore(obj);
-    }
-  };
-
   return (
     <div className="relative flex text-black h-[90vh]">
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[512px] max-h-[512px] bg-no-repeat bg-center bg-contain pointer-events-none z-0"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[100%] h-[512px] max-h-[512px] bg-no-repeat bg-center bg-contain pointer-events-none z-0"
         style={{ backgroundImage: "url('/images/detail-layout.png')" }}
       />
 
@@ -183,12 +170,13 @@ export default function ScriptWritingApp({ slug }) {
           finalVideoData={finalVideo}
           setFinalVideo={setFinalVideo}
           setScriptData={setScript}
-          handleLoadMore={handleLoadMore}
+          episodes={episodes}
+          currEpisode={currEpisode}
+          currScene={currScene}
+          sendMessage={sendMessage}
+          setMessage={setMessage}
+          calledPrompt={message}
         />
-
-        {!episodes?.length == 0 && (
-          <RightPanel setMessage={setMessage} episodeData={episodes} sendMessage={sendMessage} />
-        )}
       </div>
     </div>
   );

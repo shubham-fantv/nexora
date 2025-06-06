@@ -86,7 +86,6 @@ export function LeftPanel({
           ))}
         </div>
       </div>
-      {/* Input box sticky at bottom */}
       <div className="absolute bottom-4 left-4 right-4 border border-[#18181826] bg-[#FFF] rounded-lg p-4 flex items-center">
         <input
           type="text"

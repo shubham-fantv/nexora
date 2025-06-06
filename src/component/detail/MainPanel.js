@@ -7,12 +7,12 @@ import fetcher from "../../dataProvider";
 import { useMutation } from "react-query";
 import { useRouter } from "next/router";
 import LoadingMarquee from "../common/LoadingMarquee";
+import { RightPanel } from "./RightPanel";
 
 export function MainPanel({
   activeTab,
   setActiveTab,
   availableTabs,
-  synopsisData,
   characterData,
   storyboardData,
   isLoading,
@@ -21,41 +21,24 @@ export function MainPanel({
   finalVideoData,
   setFinalVideo,
   scriptData,
-  prevScript,
-  nextScript,
   setScriptData,
-  handleLoadMore,
+  episodes,
+  sendMessage,
+  currEpisode,
+  currScene,
+  setMessage,
+  calledPrompt,
 }) {
   const router = useRouter();
   const [isVideoGeneration, setIsVideoGeneration] = useState(false);
   const [storyboardFinal, setStoryboardFinal] = useState([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Carousel state - tracks which script is currently active
-  const [currentPosition, setCurrentPosition] = useState(0); // 0 = scriptData, -1 = prevScript, 1 = nextScript
-  const [slideOffset, setSlideOffset] = useState(0); // For animation offset
+  const [selectedEpisode, setSelectedEpisode] = useState(currEpisode > 0 ? currEpisode : 1);
+  const [selectedScene, setSelectedScene] = useState(currScene > 0 ? currScene : 1);
 
-  // Get the script that should be displayed based on current position
-  const getCurrentScript = () => {
-    switch (currentPosition) {
-      case -1:
-        return prevScript;
-      case 0:
-        return scriptData;
-      case 1:
-        return nextScript;
-      default:
-        return scriptData;
-    }
-  };
+  const [slideOffset, setSlideOffset] = useState(0);
 
-  const canGoPrev = () => {
-    return currentPosition === 0 ? !!prevScript : true; // Can always go prev unless we're at prevScript and no more prev
-  };
-
-  const canGoNext = () => {
-    return currentPosition === 0 ? !!nextScript : true; // Can always go next unless we're at nextScript and no more next
-  };
   const { mutate: generateVideoApi } = useMutation(
     (obj) => fetcher.post(`/merge_scene_videos`, obj),
     {
@@ -80,145 +63,125 @@ export function MainPanel({
   };
 
   const handlePrevScript = () => {
-    if (!canGoPrev() || isTransitioning) return;
-    setIsTransitioning(true);
+    const epIndex = selectedEpisode - 1;
+    const scIndex = selectedScene - 1;
 
-    let newPosition = currentPosition;
-    if (currentPosition === 0) {
-      newPosition = -1;
-    } else if (currentPosition === 1) {
-      newPosition = 0;
-    } else {
-      handleLoadMore("previous");
+    if (scIndex > 0) {
+      loadScene(epIndex, scIndex - 1);
+    } else if (epIndex > 0) {
+      const prevEpScenes = episodes?.[epIndex - 1]?.child?.length || 0;
+      if (prevEpScenes > 0) {
+        loadScene(epIndex - 1, prevEpScenes - 1);
+      }
     }
-
-    setSlideOffset(-500);
-    setCurrentPosition(newPosition);
-
-    setTimeout(() => {
-      setSlideOffset(0);
-    }, 10);
-
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 350);
   };
 
   const handleNextScript = () => {
-    if (!canGoNext() || isTransitioning) return;
-    setIsTransitioning(true);
-    let newPosition = currentPosition;
-    if (currentPosition === 0) {
-      newPosition = 1;
-    } else if (currentPosition === -1) {
-      newPosition = 0;
-    } else {
-      handleLoadMore("next");
+    const epIndex = selectedEpisode - 1;
+    const scIndex = selectedScene - 1;
+
+    const currEp = episodes?.[epIndex];
+    const totalScenes = currEp?.child?.length || 0;
+
+    if (scIndex + 1 < totalScenes) {
+      loadScene(epIndex, scIndex + 1);
+    } else if (epIndex + 1 < episodes.length) {
+      loadScene(epIndex + 1, 0);
     }
-    setSlideOffset(100);
-    setCurrentPosition(newPosition);
-
-    setTimeout(() => {
-      setSlideOffset(0);
-    }, 10);
-
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 350);
   };
+
+  const loadScene = (epIndex, scIndex) => {
+    const episode = episodes?.[epIndex];
+    const sceneObj = episode?.child?.[scIndex];
+    if (episode?.prompt && !sceneObj && !isLoading) {
+      setMessage?.(episode?.prompt || "");
+      sendMessage?.(episode?.prompt || "");
+    }
+
+    if (!sceneObj) return;
+
+    setSelectedEpisode(epIndex + 1);
+    setSelectedScene(scIndex + 1);
+
+    const hasDescription = !!sceneObj?.description?.trim() || !!sceneObj?.overview?.trim();
+
+    if (hasDescription) {
+      setScriptData((sceneObj?.overview || "") + "\n\n" + (sceneObj?.description || ""));
+    } else if (!isLoading) {
+      setMessage?.(sceneObj?.prompt || "");
+      sendMessage?.(sceneObj?.prompt || "");
+    }
+  };
+
+  const isAtFirst = selectedEpisode === 1 && selectedScene === 1;
+
+  const isAtLast = (() => {
+    const lastEpIndex = episodes.length - 1;
+    const lastSceneIndex = episodes?.[lastEpIndex]?.child?.length - 1;
+    return selectedEpisode - 1 === lastEpIndex && selectedScene - 1 === lastSceneIndex;
+  })();
 
   const renderContent = () => {
     switch (activeTab) {
-      case "Synopsis":
-        return (
-          <div
-            className="overflow-auto bg-[#FFFFFF] border border-[#18181826] rounded-lg p-6 relative"
-            style={{ height: "calc(100vh - 60px)", maxHeigh: "calc(100vh - 60px)" }}
-          >
-            <div className="mb-6">
-              {isLoading ? (
-                <div className="mt-10">
-                  <LoadingPreview />
-                </div>
-              ) : synopsisData ? (
-                <div className="text-[#5D5D5D]">
-                  <RenderMarkdown markdown={synopsisData} />
-                </div>
-              ) : (
-                <p className="text-[#5D5D5D]">No synopsis data available yet.</p>
-              )}
-            </div>
-          </div>
-        );
       case "Script":
         return (
           <div
             className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-lg"
             style={{ height: "100%", maxHeight: "100%" }}
           >
-            {/* Previous Button */}
-            <button
-              onClick={handlePrevScript}
-              className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/5 transition-colors ${
-                !canGoPrev() || isTransitioning ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              disabled={!canGoPrev() || isTransitioning}
-            >
-              <div
-                className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-xs ${
-                  canGoPrev() && !isTransitioning ? "group-hover:bg-black/70" : ""
-                } transition-colors`}
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  className={`${
-                    canGoPrev() && !isTransitioning ? "group-hover:scale-110" : ""
-                  } transition-transform`}
-                >
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
+            {currEpisode && currScene && (
+              <div className="p-1">
+                Selected Episode:{selectedEpisode} selected Scene:{selectedScene}
               </div>
-            </button>
-            {/* Next Button */}
-            <button
-              onClick={handleNextScript}
-              className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/5 transition-colors ${
-                !canGoNext() || isTransitioning ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              disabled={!canGoNext() || isTransitioning}
-            >
-              <div
-                className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm ${
-                  canGoNext() && !isTransitioning ? "group-hover:bg-black/70" : ""
-                } transition-colors`}
+            )}
+            {!isAtFirst && (
+              <button
+                onClick={handlePrevScript}
+                disabled={isAtFirst}
+                className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/5 transition-colors `}
               >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  className={`${
-                    canGoNext() && !isTransitioning ? "group-hover:scale-110" : ""
-                  } transition-transform`}
+                <div
+                  className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-xs  transition-colors`}
                 >
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
-              </div>
-            </button>
-            {/* Carousel Container */}
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                  >
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </div>
+              </button>
+            )}
+
+            {!isAtLast && (
+              <button
+                onClick={handleNextScript}
+                disabled={isAtLast}
+                className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/5 transition-colors`}
+              >
+                <div
+                  className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm  transition-colors`}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                  >
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </div>
+              </button>
+            )}
             <div className="relative w-full h-full overflow-hidden">
-              {/* Current Content Slide */}
               <div
-                className={`absolute inset-0 w-full h-full transition-all duration-300 ease-out ${
-                  isTransitioning ? "transform" : ""
-                }`}
+                className={`absolute inset-0 w-full h-full transition-all duration-300 ease-out `}
                 style={{
                   transform: `translateX(${slideOffset}%)`,
                   opacity: isTransitioning && slideOffset !== 0 ? 0.9 : 1,
@@ -229,9 +192,9 @@ export function MainPanel({
                     <div className="mt-10">
                       <LoadingPreview />
                     </div>
-                  ) : getCurrentScript() ? (
+                  ) : scriptData ? (
                     <div className="text-[#5D5D5D] min-h-full">
-                      <RenderMarkdown markdown={getCurrentScript()} />
+                      <RenderMarkdown markdown={scriptData} />
                     </div>
                   ) : (
                     <p className="text-[#5D5D5D]">No script data available yet.</p>
@@ -239,7 +202,6 @@ export function MainPanel({
                 </div>
               </div>
 
-              {/* Slide Transition Overlay */}
               <div
                 className={`absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-opacity duration-100 pointer-events-none ${
                   isTransitioning && slideOffset !== 0 ? "opacity-100" : "opacity-0"
@@ -255,7 +217,7 @@ export function MainPanel({
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 bg-white/80  px-3 py-1 ">
               {isLoading && scriptData && (
                 <div className="mt-1  w-full bg-[#FFF]">
-                  <LoadingMarquee />
+                  <LoadingMarquee calledPrompt={calledPrompt} />
                 </div>
               )}
             </div>
@@ -312,26 +274,46 @@ export function MainPanel({
   };
 
   return (
-    <div className={`${isFullWidth ? "w-[70%]" : "w-[60%]"} flex flex-col mr-2`}>
-      {/* Main Content */}
-      <div className="overflow-auto h-screen  sticky scrollbar-hide">
-        <div className="flex gap-2 py-4 overflow-x-auto scrollbar-hide">
-          {availableTabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`w-[150px] px-6 text-sm rounded-md shadow-md h-8 ${
-                activeTab === tab
-                  ? "bg-[#181818] text-[#FFFFFF]"
-                  : "bg-[#FFFFFF] text-[#5D5D5D] border border-[#D9D9D9]"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+    <div className="flex w-[70%]">
+      <div className={`${isFullWidth ? "w-[1000%]" : "w-[80%]"} flex flex-col mr-2`}>
+        {/* Main Content */}
+        <div className="overflow-auto h-screen  sticky scrollbar-hide">
+          <div className="flex gap-2 py-4 overflow-x-auto scrollbar-hide">
+            {availableTabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`w-[150px] px-6 text-sm rounded-md shadow-md h-8 ${
+                  activeTab === tab
+                    ? "bg-[#181818] text-[#FFFFFF]"
+                    : "bg-[#FFFFFF] text-[#5D5D5D] border border-[#D9D9D9]"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+          <div style={{ height: "90%" }}>{renderContent()}</div>
         </div>
-        <div style={{ height: "90%" }}>{renderContent()}</div>
       </div>
+
+      {!episodes?.length == 0 && (
+        <RightPanel
+          currEpisode={selectedEpisode}
+          currScene={selectedScene}
+          episodeData={episodes}
+          setScriptData={setScriptData}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+          isLoading={isLoading}
+          onSceneClick={(epIndex, scIndex) => {
+            loadScene(epIndex, scIndex);
+          }}
+          onSceneChange={({ episode, scene, sceneObj }) => {
+            console.log("🚀 ~ episode:", episode, "scene=", scene, "sceneObj", sceneObj);
+          }}
+        />
+      )}
     </div>
   );
 }
