@@ -98,7 +98,7 @@ export function LeftPanel({
           disabled={isLoading}
         />
         <button
-          onClick={sendMessage}
+          onClick={() => sendMessage()}
           disabled={isLoading}
           className="w-8 h-8 bg-[#181818] rounded flex items-center justify-center ml-2 cursor-pointer "
         >

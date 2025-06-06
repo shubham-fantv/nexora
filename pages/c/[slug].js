@@ -92,9 +92,9 @@ export default function ScriptWritingApp({ slug }) {
   const sendMessage = async (item) => {
     setIsLoading(true);
     setContent("");
-    setPrevPrompt(prompt || message);
-    generateVideoApi({ session_id: slug, prompt: prompt || message });
-    getActiveTab({ session_id: slug, prompt: prompt || message });
+    setPrevPrompt(prompt || message || item);
+    generateVideoApi({ session_id: slug, prompt: prompt || message || item });
+    getActiveTab({ session_id: slug, prompt: prompt || message || item });
   };
 
   const updateStateFromParsedData = (data) => {
@@ -146,15 +146,6 @@ export default function ScriptWritingApp({ slug }) {
       loadMore(obj);
     }
   };
-
-  console.log(
-    `🚀 ~ sendMessage ~ { session_id: slug, prompt: prompt=>`,
-    prompt,
-    "==>message",
-    message,
-    "prevPrompt==>",
-    prevPrompt
-  );
 
   return (
     <div className="relative flex text-black h-[90vh]">
