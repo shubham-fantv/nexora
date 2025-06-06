@@ -92,9 +92,9 @@ export default function ScriptWritingApp({ slug }) {
   const sendMessage = async (item) => {
     setIsLoading(true);
     setContent("");
-    setPrevPrompt(prompt || message || item);
-    generateVideoApi({ session_id: slug, prompt: prompt || message || item });
-    getActiveTab({ session_id: slug, prompt: prompt || message || item });
+    setPrevPrompt(item || message || prompt);
+    generateVideoApi({ session_id: slug, prompt: item || message || prompt });
+    getActiveTab({ session_id: slug, prompt: item || message || prompt });
   };
 
   const updateStateFromParsedData = (data) => {
