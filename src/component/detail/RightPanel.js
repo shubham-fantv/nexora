@@ -23,6 +23,9 @@ export function RightPanel({
     setOpenEpisodes([currEpisode > 0 ? currEpisode - 1 : 0]);
   }, [currScene, currEpisode]);
 
+  console.log("🚀 ~ currentSceneIndex:", currentSceneIndex, "currScene==>", currScene);
+  console.log("🚀 ~ currentEpisodeIndex:", currentEpisodeIndex, "currEpisode==>", currEpisode);
+
   const [episodes, setEpisodes] = useState([]);
   const [openEpisodes, setOpenEpisodes] = useState([0]);
 
@@ -35,7 +38,29 @@ export function RightPanel({
 
   useEffect(() => {
     if (selectedScene) {
-      setScriptData((selectedScene.overview || "") + "\n\n" + (selectedScene.description || ""));
+      if (currentSceneIndex == 0) {
+        setScriptData(
+          (selectedEpisode?.title || "") +
+            "\n\n" +
+            (selectedEpisode?.overview || "") +
+            "\n\n" +
+            (selectedScene?.title || "") +
+            "\n\n" +
+            (selectedScene?.overview || "") +
+            "\n\n" +
+            (selectedScene?.description || "")
+        );
+      } else {
+        setScriptData(
+          (selectedEpisode?.title || "") +
+            "\n\n" +
+            (selectedScene?.title || "") +
+            "\n\n" +
+            (selectedScene?.overview || "") +
+            "\n\n" +
+            (selectedScene?.description || "")
+        );
+      }
       if (selectedScene?.description == "" && !isLoading) {
         setMessage?.(selectedScene.prompt || "");
         sendMessage?.(selectedScene.prompt || "");
@@ -45,13 +70,18 @@ export function RightPanel({
         scene: currentSceneIndex + 1,
         sceneObj: selectedScene,
       });
+    } else if (selectedEpisode) {
+      setScriptData((selectedEpisode?.title || "") + "\n\n" + (selectedEpisode?.overview || ""));
+      if (selectedEpisode?.child?.length == 0 && !isLoading) {
+        setMessage?.(selectedEpisode.prompt || "");
+        sendMessage?.(selectedEpisode.prompt || "");
+      }
     }
   }, [currentEpisodeIndex, currentSceneIndex, episodeData]);
 
   const handleToggleEpisode = (episodeIndex) => {
     setCurrentEpisodeIndex(episodeIndex);
     setCurrentSceneIndex(null);
-    // Always expand only the selected episode
     setOpenEpisodes([episodeIndex]);
   };
   return (

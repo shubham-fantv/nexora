@@ -37,6 +37,11 @@ export function MainPanel({
   const [selectedEpisode, setSelectedEpisode] = useState(currEpisode > 0 ? currEpisode : 1);
   const [selectedScene, setSelectedScene] = useState(currScene > 0 ? currScene : 1);
 
+  useEffect(() => {
+    setSelectedEpisode(currEpisode > 0 ? currEpisode : 1);
+    setSelectedScene(currScene > 0 ? currScene : 1);
+  }, [currScene, currEpisode]);
+
   const [slideOffset, setSlideOffset] = useState(0);
 
   const { mutate: generateVideoApi } = useMutation(
