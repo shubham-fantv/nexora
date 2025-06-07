@@ -73,9 +73,6 @@ export function MainPanel({
     const epIndex = selectedEpisode - 1;
     const scIndex = selectedScene - 1;
 
-    if (isLoading) {
-      return;
-    }
     if (scIndex > 0) {
       loadScene(epIndex, scIndex - 1);
     } else if (epIndex > 0) {
