@@ -23,9 +23,6 @@ export function RightPanel({
     setOpenEpisodes([currEpisode > 0 ? currEpisode - 1 : 0]);
   }, [currScene, currEpisode]);
 
-  console.log("🚀 ~ currentSceneIndex:", currentSceneIndex, "currScene==>", currScene);
-  console.log("🚀 ~ currentEpisodeIndex:", currentEpisodeIndex, "currEpisode==>", currEpisode);
-
   const [episodes, setEpisodes] = useState([]);
   const [openEpisodes, setOpenEpisodes] = useState([0]);
 

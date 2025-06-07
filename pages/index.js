@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
@@ -10,7 +10,7 @@ export default function VideoCreationUI() {
   const [selectedCategory, setSelectedCategory] = useState("Short Drama");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
+  const videoRef = useRef(null);
   const categories = [
     { id: "short-drama", name: "Short Drama", icon: <PlusIcon size={16} /> },
     { id: "web-series", name: "Web Series", icon: null },
@@ -63,76 +63,86 @@ export default function VideoCreationUI() {
   };
 
   return (
-    <div
-      className="flex text-black items-center justify-center w-full bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: "url('/images/home/layout.png')",
-        height: "calc(100vh - 50px)",
-        maxHeigh: "calc(100vh - 50px)",
-      }}
-    >
-      <div className="w-full max-w-[760px] mt-10">
-        <div className="flex flex-col items-center mb-8">
-          <h1 className="text-5xl font-bold  mb-3">Let's make an awesome video !</h1>
-          <p className="text-[#5D5D5D]">
-            Create web series, vertical videos, flims, music video, reels, ads or anything you love
-          </p>
-        </div>
+    <div className="relative w-full h-[calc(100vh-50px)] overflow-hidden">
+      <video
+        ref={videoRef}
+        playsInline
+        muted
+        loop
+        autoPlay
+        preload="eager"
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+      >
+        <source src="/video/bgVideo.webm" type="video/webm" />
+        Your browser does not support the video tag.
+      </video>
 
-        <div className="border bg-[#FFF] border-[#FFFFFF] rounded-lg p-6 mb-6">
-          <textarea
-            rows={3}
-            type="text"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Give your prompts here..."
-            className="w-full bg-transparent text-[#5D5D5D] outline-none mb-6"
-          />
-
-          <div className="flex justify-between">
-            <div className="flex gap-4">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.name)}
-                  className={`flex items-center gap-2 py-2 px-4 rounded-md ${
-                    selectedCategory === category.name ? "bg-[#1818180D]" : "bg-[#1818180D]"
-                  }`}
-                >
-                  {category.icon}
-                  <span className="text-[#5D5D5D] text-sm">{category.name}</span>
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={generateVideo}
-              disabled={isLoading}
-              className="flex items-center bg-[#181818] h-10 w-10  rounded-md justify-center"
-            >
-              {isLoading ? (
-                <div className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full" />
-              ) : (
-                <img src="/images/submit.svg" alt="Submit" />
-              )}
-            </button>
+      {/* Main Content */}
+      <div className="relative z-10 flex text-black items-center justify-center w-full h-full">
+        <div className="w-full max-w-[760px] mt-10">
+          <div className="flex flex-col items-center mb-8">
+            <h1 className="text-5xl font-bold  mb-3">Let's make an awesome video !</h1>
+            <p className="text-[#5D5D5D]">
+              Create web series, vertical videos, films, music video, reels, ads or anything you
+              love
+            </p>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {templates.map((template) => (
-            <div
-              key={template.id}
-              className="border bg-[#FFFFFF] border-[#18181826] rounded-lg p-4 cursor-pointer hover:bg-[#FFFFFF] hover:border-gray-400 transition-all"
-              onClick={() => handleTemplateClick(template.description)}
-            >
-              <h3 className="text-[#181818] mb-2 flex items-center">
-                {template.title}
-                <span className="ml-2 text-xs text-[#5D5D5D]">(click to use)</span>
-              </h3>
-              <p className="text-[#5D5D5D] text-sm">{template.description}</p>
+          <div className="border bg-[#FFF] border-[#FFFFFF] rounded-lg p-6 mb-6">
+            <textarea
+              rows={3}
+              type="text"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Give your prompts here..."
+              className="w-full bg-transparent text-[#5D5D5D] outline-none mb-6"
+            />
+
+            <div className="flex justify-between">
+              <div className="flex gap-4">
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.name)}
+                    className={`flex items-center gap-2 py-2 px-4 rounded-md ${
+                      selectedCategory === category.name ? "bg-[#1818180D]" : "bg-[#1818180D]"
+                    }`}
+                  >
+                    {category.icon}
+                    <span className="text-[#5D5D5D] text-sm">{category.name}</span>
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={generateVideo}
+                disabled={isLoading}
+                className="flex items-center bg-[#181818] h-10 w-10  rounded-md justify-center"
+              >
+                {isLoading ? (
+                  <div className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full" />
+                ) : (
+                  <img src="/images/submit.svg" alt="Submit" />
+                )}
+              </button>
             </div>
-          ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {templates.map((template) => (
+              <div
+                key={template.id}
+                className="border bg-[#FFFFFF] border-[#18181826] rounded-lg p-4 cursor-pointer hover:bg-[#FFFFFF] hover:border-gray-400 transition-all"
+                onClick={() => handleTemplateClick(template.description)}
+              >
+                <h3 className="text-[#181818] mb-2 flex items-center">
+                  {template.title}
+                  <span className="ml-2 text-xs text-[#5D5D5D]">(click to use)</span>
+                </h3>
+                <p className="text-[#5D5D5D] text-sm">{template.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

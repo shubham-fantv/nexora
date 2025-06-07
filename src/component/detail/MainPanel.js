@@ -33,6 +33,8 @@ export function MainPanel({
   const [isVideoGeneration, setIsVideoGeneration] = useState(false);
   const [storyboardFinal, setStoryboardFinal] = useState([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [preventToNextEpisode, setPreventToNextEpisode] = useState();
+  const [preventToNextScene, setPreventToNextScene] = useState();
 
   const [selectedEpisode, setSelectedEpisode] = useState(currEpisode > 0 ? currEpisode : 1);
   const [selectedScene, setSelectedScene] = useState(currScene > 0 ? currScene : 1);
@@ -85,8 +87,8 @@ export function MainPanel({
     const epIndex = selectedEpisode - 1;
     const scIndex = selectedScene - 1;
 
-    const currEp = episodes?.[epIndex];
-    const totalScenes = currEp?.child?.length || 0;
+    let currEp = episodes?.[epIndex];
+    let totalScenes = currEp?.child?.length || 0;
 
     if (scIndex + 1 < totalScenes) {
       loadScene(epIndex, scIndex + 1);
@@ -101,6 +103,8 @@ export function MainPanel({
     if (episode?.prompt && !sceneObj && !isLoading) {
       setMessage?.(episode?.prompt || "");
       sendMessage?.(episode?.prompt || "");
+      setPreventToNextEpisode(epIndex);
+      setPreventToNextScene(scIndex);
     }
 
     if (!sceneObj) return;
@@ -115,6 +119,8 @@ export function MainPanel({
     } else if (!isLoading) {
       setMessage?.(sceneObj?.prompt || "");
       sendMessage?.(sceneObj?.prompt || "");
+      setPreventToNextEpisode(epIndex);
+      setPreventToNextScene(scIndex);
     }
   };
 
