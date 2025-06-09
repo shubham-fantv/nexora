@@ -75,7 +75,10 @@ export function RightPanel({
           "\n\n" +
           (selectedEpisode?.description || "")
       );
-      if ((selectedEpisode?.child?.length == 0 && !isLoading) || !selectedEpisode?.description) {
+      if (
+        (selectedEpisode?.child?.length == 0 && !isLoading) ||
+        (!selectedEpisode?.description && !isLoading)
+      ) {
         setMessage?.(selectedEpisode.prompt || "");
         sendMessage?.(selectedEpisode.prompt || "");
       }
