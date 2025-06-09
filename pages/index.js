@@ -4,12 +4,14 @@ import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
 import fetcher from "../src/dataProvider";
 import Loader from "../src/component/common/Loading/loading";
+import { Box, useMediaQuery } from "@mui/system";
 
 export default function VideoCreationUI() {
   const [prompt, setPrompt] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Short Drama");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const isMobile = useMediaQuery("(max-width:768px)");
   const videoRef = useRef(null);
   const categories = [
     { id: "short-drama", name: "Short Drama", icon: <PlusIcon size={16} /> },
@@ -63,7 +65,7 @@ export default function VideoCreationUI() {
   };
 
   return (
-    <div className="relative w-full h-[calc(100vh-50px)] overflow-hidden">
+    <div className="relative w-full h-[calc(100vh)] overflow-hidden">
       <video
         ref={videoRef}
         playsInline
@@ -76,6 +78,31 @@ export default function VideoCreationUI() {
         <source src="/video/bgVideo.webm" type="video/webm" />
         Your browser does not support the video tag.
       </video>
+      <div
+        style={{ position: "absolute", top: "15px", left: "40px" }}
+        onClick={() => window?.open("/", "_self", "noopener,noreferrer")}
+      >
+        {isMobile ? (
+          <div>
+            <img
+              src={"/images/logo.svg"}
+              alt="mobile FanTV logo"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+        ) : (
+          <div>
+            <img
+              src={"/images/logo.svg"}
+              alt="FanTV Logo"
+              width={170}
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+        )}
+      </div>
 
       {/* Main Content */}
       <div className="relative z-10 flex text-black items-center justify-center w-full h-full">
@@ -147,4 +174,12 @@ export default function VideoCreationUI() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  return {
+    props: {
+      asLayout: "EmptyLayout",
+    },
+  };
 }

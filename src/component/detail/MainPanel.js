@@ -289,7 +289,7 @@ export function MainPanel({
       <div className={`${isFullWidth ? "w-[1000%]" : "w-[80%]"} flex flex-col mr-2`}>
         {/* Main Content */}
         <div className="overflow-auto h-screen  sticky scrollbar-hide">
-          <div className="flex gap-2 py-4 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 pt-4 overflow-x-auto scrollbar-hide">
             {availableTabs.map((tab) => (
               <button
                 key={tab}

@@ -61,7 +61,7 @@ export function LeftPanel({
   };
 
   return (
-    <div className="w-[30%] p-4 flex flex-col gap-4 relative h-full">
+    <div className="w-[30%] p-4 flex flex-col gap-4 relative h-full mt-2">
       <div
         ref={responseContainerRef}
         className="border relative border-[#FFFFFF26] rounded-lg  overflow-y-auto mb-[128px] w-full scrollbar-hide"

@@ -83,8 +83,8 @@ export function RightPanel({
   };
   return (
     <div
-      className="overflow-auto flex flex-col bg-[#FFFFFF] border border-[#18181826] mr-4 mt-4 rounded-lg relative"
-      style={{ height: "calc(100vh - 80px)" }}
+      className="overflow-auto flex flex-col bg-[#FFFFFF] border border-[#18181826] mr-4 mt-12 rounded-lg relative"
+      style={{ height: "calc(100vh - 120px)" }}
     >
       <div className="w-[170px] p-4 text-[#5D5D5D]">
         {episodes.length === 0 && <div>Episodes will come here</div>}

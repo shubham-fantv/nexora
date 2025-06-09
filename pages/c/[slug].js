@@ -136,7 +136,7 @@ export default function ScriptWritingApp({ slug }) {
   const handleCreateVideo = (item) => {};
 
   return (
-    <div className="relative flex text-black h-[90vh]">
+    <div className="relative flex text-black h-[92vh]">
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[100%] h-[512px] max-h-[512px] bg-no-repeat bg-center bg-contain pointer-events-none z-0"
         style={{ backgroundImage: "url('/images/detail-layout.png')" }}
