@@ -8,6 +8,7 @@ import { useMutation } from "react-query";
 import { useRouter } from "next/router";
 import LoadingMarquee from "../common/LoadingMarquee";
 import { RightPanel } from "./RightPanel";
+import ShimmerCard from "../Shimmer/StoryboardShimmer";
 
 export function MainPanel({
   activeTab,
@@ -35,6 +36,7 @@ export function MainPanel({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [preventToNextEpisode, setPreventToNextEpisode] = useState();
   const [preventToNextScene, setPreventToNextScene] = useState();
+  const [calledApiForTab, setCalledApiForTab] = useState("Script");
 
   const [selectedEpisode, setSelectedEpisode] = useState(currEpisode > 0 ? currEpisode : null);
   const [selectedScene, setSelectedScene] = useState(currScene > 0 ? currScene : null);
@@ -43,6 +45,10 @@ export function MainPanel({
     setSelectedEpisode(currEpisode > 0 ? currEpisode : null);
     setSelectedScene(currScene > 0 ? currScene : null);
   }, [currScene, currEpisode]);
+
+  useEffect(() => {
+    setCalledApiForTab(activeTab);
+  }, [activeTab]);
 
   const [slideOffset, setSlideOffset] = useState(0);
 
@@ -64,7 +70,7 @@ export function MainPanel({
     setIsVideoGeneration(true);
     generateVideoApi({
       session_id: router?.query?.slug,
-      episode_number: storyboardData?.[0].episode_number,
+      episode_number: storyboardData?.[0]?.episode_number,
       scene_number: storyboardData?.[0]?.scene_number,
     });
   };
@@ -100,35 +106,54 @@ export function MainPanel({
   const loadScene = (epIndex, scIndex) => {
     const episode = episodes?.[epIndex];
     const sceneObj = episode?.child?.[scIndex];
-    if (episode?.prompt && !sceneObj && !isLoading) {
-      setMessage?.(episode?.prompt || "");
-      sendMessage?.(episode?.prompt || "");
-      setPreventToNextEpisode(epIndex);
-      setPreventToNextScene(scIndex);
+    const storyboard = sceneObj?.storyboard;
+    if (activeTab == "Script") {
+      setCalledApiForTab("Script");
+      if (episode?.prompt && !sceneObj && !isLoading) {
+        setMessage?.(episode?.prompt || "");
+        sendMessage?.(episode?.prompt || "");
+        setPreventToNextEpisode(epIndex);
+        setPreventToNextScene(scIndex);
+      }
+      if (!sceneObj) return;
+      setSelectedEpisode(epIndex + 1);
+      setSelectedScene(scIndex + 1);
+      const hasDescription = !!sceneObj?.description?.trim() || !!sceneObj?.overview?.trim();
+      if (hasDescription) {
+        setScriptData((sceneObj?.overview || "") + "\n\n" + (sceneObj?.description || ""));
+      } else if (!isLoading) {
+        setMessage?.(sceneObj?.prompt || "");
+        sendMessage?.(sceneObj?.prompt || "");
+        setPreventToNextEpisode(epIndex);
+        setPreventToNextScene(scIndex);
+      }
     }
 
-    if (!sceneObj) return;
-
-    setSelectedEpisode(epIndex + 1);
-    setSelectedScene(scIndex + 1);
-
-    const hasDescription = !!sceneObj?.description?.trim() || !!sceneObj?.overview?.trim();
-
-    if (hasDescription) {
-      setScriptData((sceneObj?.overview || "") + "\n\n" + (sceneObj?.description || ""));
-    } else if (!isLoading) {
-      setMessage?.(sceneObj?.prompt || "");
-      sendMessage?.(sceneObj?.prompt || "");
-      setPreventToNextEpisode(epIndex);
-      setPreventToNextScene(scIndex);
+    if (activeTab == "Storyboard") {
+      setCalledApiForTab("Storyboard");
+      if (storyboard?.length == 0 && !isLoading) {
+        setMessage?.(sceneObj?.storyboard_prompt || "");
+        sendMessage?.(sceneObj?.storyboard_prompt || "");
+        setPreventToNextEpisode(epIndex);
+        setPreventToNextScene(scIndex);
+      }
+      if (!sceneObj) return;
+      setSelectedEpisode(epIndex + 1);
+      setSelectedScene(scIndex + 1);
     }
   };
 
-  const isAtFirst = selectedEpisode === 1 && selectedScene === 1;
+  const isAtFirst = selectedEpisode === null && selectedScene === null;
 
   const isAtLast = (() => {
+    if (!Array.isArray(episodes) || episodes?.length === 0) return true;
+
     const lastEpIndex = episodes.length - 1;
-    const lastSceneIndex = episodes?.[lastEpIndex]?.child?.length - 1;
+    const lastEpisode = episodes[lastEpIndex];
+    const lastSceneIndex = Array.isArray(lastEpisode?.child) ? lastEpisode.child.length - 1 : -1;
+
+    if (lastSceneIndex < 0) return false;
+
     return selectedEpisode - 1 === lastEpIndex && selectedScene - 1 === lastSceneIndex;
   })();
 
@@ -137,14 +162,9 @@ export function MainPanel({
       case "Script":
         return (
           <div
-            className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-lg"
+            className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-r-lg rounded-bl-lg"
             style={{ height: "100%", maxHeight: "100%" }}
           >
-            {currEpisode && currScene && (
-              <div className="p-1">
-                Selected Episode:{selectedEpisode} selected Scene:{selectedScene}
-              </div>
-            )}
             {!isAtFirst && (
               <button
                 onClick={handlePrevScript}
@@ -190,6 +210,7 @@ export function MainPanel({
                 </div>
               </button>
             )}
+
             <div className="relative w-full h-full overflow-hidden">
               <div
                 className={`absolute inset-0 w-full h-full transition-all duration-300 ease-out `}
@@ -198,7 +219,7 @@ export function MainPanel({
                   opacity: isTransitioning && slideOffset !== 0 ? 0.9 : 1,
                 }}
               >
-                <div className="p-6 overflow-auto h-full">
+                <div className="px-4 pb-6 pt-3 overflow-auto h-full">
                   {isLoading && !scriptData ? (
                     <div className="mt-10">
                       <LoadingPreview />
@@ -206,6 +227,20 @@ export function MainPanel({
                   ) : scriptData ? (
                     <div className="text-[#5D5D5D] min-h-full">
                       <RenderMarkdown markdown={scriptData} />
+                      <div>
+                        {isLoading && calledApiForTab == "Script" ? (
+                          selectedEpisode - 1 === preventToNextEpisode &&
+                          selectedScene - 1 === preventToNextScene ? (
+                            <p className="flex justify-center pt-10">
+                              Scene shots being generated...
+                            </p>
+                          ) : (
+                            <p className="flex justify-center pt-10">
+                              Please wait others scene shots being generated...
+                            </p>
+                          )
+                        ) : null}
+                      </div>
                     </div>
                   ) : (
                     <p className="text-[#5D5D5D]">No script data available yet.</p>
@@ -225,41 +260,174 @@ export function MainPanel({
                 }}
               />
             </div>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 bg-white/80  px-3 py-1 ">
-              {isLoading && scriptData && (
-                <div className="mt-1  w-full bg-[#FFF]">
-                  <LoadingMarquee calledPrompt={calledPrompt} />
-                </div>
-              )}
-            </div>
+            {activeTab == "Script" && calledApiForTab == "Script" && (
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 bg-white/80  px-3 py-1 ">
+                {isLoading && scriptData && (
+                  <div className="mt-1  w-full bg-[#FFF]">
+                    <LoadingMarquee calledPrompt={calledPrompt} />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         );
       case "Character":
         return (
-          <div className="mb-6">
-            <CharacterGrid charactersData={characterData} isLoading={isLoading} />
+          <div
+            className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-r-lg rounded-bl-lg"
+            style={{ height: "100%", maxHeight: "100%" }}
+          >
+            <div className="mb-6">
+              <CharacterGrid charactersData={characterData} isLoading={isLoading} />
+            </div>
           </div>
         );
       case "Storyboard":
         return (
-          <div className="mb-10">
-            <StoryboardUI
-              data={storyboardData}
-              isLoading={isLoading}
-              handleCreateVideo={handleCreateVideo}
-            />
-            <button
-              onClick={() => handleCreateAllVideo()}
-              className="h-[40px] w-[150px] rounded-lg m-4   float-end  flex justify-center items-center"
-              style={{ background: "linear-gradient(180deg, #A9A0FF -58.75%, #A0F9FF 155%)" }}
-              disabled={isVideoGeneration}
-            >
-              {isVideoGeneration ? (
-                <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black border-t-transparent rounded-full" />
-              ) : (
-                <>Create All</>
-              )}
-            </button>
+          <div
+            className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-r-lg rounded-bl-lg"
+            style={{ height: "100%", maxHeight: "100%" }}
+          >
+            {currEpisode && currScene && (
+              <div className="px-6 pt-2">
+                <RenderMarkdown
+                  markdown={
+                    episodes[selectedEpisode - 1]?.title +
+                    "\n " +
+                    episodes?.[selectedEpisode - 1]?.child[selectedScene - 1]?.title
+                  }
+                />
+              </div>
+            )}
+
+            {!isAtFirst && (
+              <button
+                onClick={handlePrevScript}
+                disabled={isAtFirst}
+                className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/5 transition-colors `}
+              >
+                <div
+                  className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-xs  transition-colors`}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                  >
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </div>
+              </button>
+            )}
+
+            {!isAtLast && (
+              <button
+                onClick={handleNextScript}
+                disabled={isAtLast}
+                className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/5 transition-colors`}
+              >
+                <div
+                  className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm  transition-colors`}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                  >
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </div>
+              </button>
+            )}
+
+            <div className="relative w-full h-full overflow-hidden">
+              <div
+                className={`absolute inset-0 w-full h-full transition-all duration-300 ease-out `}
+                style={{
+                  transform: `translateX(${slideOffset}%)`,
+                  opacity: isTransitioning && slideOffset !== 0 ? 0.9 : 1,
+                }}
+              >
+                <div className="px-4 pb-20 overflow-auto h-full">
+                  {isLoading &&
+                  calledApiForTab == "Storyboard" &&
+                  selectedEpisode - 1 == preventToNextEpisode &&
+                  selectedScene - 1 === preventToNextScene ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                      {[1, 2, 3, 4, 5, 6].map(() => (
+                        <ShimmerCard className="shadow-lg" />
+                      ))}
+                    </div>
+                  ) : episodes?.[selectedEpisode - 1]?.child?.[selectedScene - 1]?.storyboard
+                      ?.length > 0 ? (
+                    <div className="text-[#5D5D5D] ">
+                      <StoryboardUI
+                        data={
+                          episodes?.[selectedEpisode - 1]?.child?.[selectedScene - 1]?.storyboard ||
+                          []
+                        }
+                        isLoading={isLoading}
+                        handleCreateVideo={handleCreateVideo}
+                      />
+                    </div>
+                  ) : isLoading ? (
+                    <p className="text-[#5D5D5D] justify-center pt-10 flex align-center  h-full m-auto">
+                      Please wait while executing other script
+                    </p>
+                  ) : (
+                    <p className="text-[#5D5D5D] justify-center pt-10 flex align-center  h-full m-auto">
+                      No Storyboard created, click on scene to generate Storyboard
+                    </p>
+                  )}
+                  {episodes?.[selectedEpisode - 1]?.child?.[selectedScene - 1]?.storyboard?.length >
+                    0 && (
+                    <button
+                      onClick={() => handleCreateAllVideo()}
+                      className="h-[40px] w-[150px] rounded-lg m-4  mb-4  float-end  flex justify-center items-center"
+                      style={{
+                        background: "linear-gradient(180deg, #A9A0FF -58.75%, #A0F9FF 155%)",
+                      }}
+                      disabled={isVideoGeneration}
+                    >
+                      {isVideoGeneration ? (
+                        <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black  border-t-transparent rounded-full" />
+                      ) : (
+                        <>Create All</>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div
+                className={`absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-opacity duration-100 pointer-events-none ${
+                  isTransitioning && slideOffset !== 0 ? "opacity-100" : "opacity-0"
+                }`}
+                style={{
+                  background:
+                    slideOffset > 0
+                      ? "linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 100%)"
+                      : "linear-gradient(-90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 100%)",
+                }}
+              />
+            </div>
+            {activeTab == "Storyboard" && calledApiForTab == "Storyboard" && (
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 bg-white/80  px-3 py-1 ">
+                {isLoading &&
+                  episodes?.[selectedEpisode - 1]?.child?.[selectedScene - 1]?.storyboard?.length ==
+                    0 && (
+                    <div className="mt-1  w-full bg-[#FFF]">
+                      <LoadingMarquee calledPrompt={calledPrompt} />
+                    </div>
+                  )}
+              </div>
+            )}
           </div>
         );
       case "Videos":
@@ -289,12 +457,12 @@ export function MainPanel({
       <div className={`${isFullWidth ? "w-[1000%]" : "w-[80%]"} flex flex-col mr-2`}>
         {/* Main Content */}
         <div className="overflow-auto h-screen  sticky scrollbar-hide">
-          <div className="flex gap-2 pt-4 overflow-x-auto scrollbar-hide">
+          <div className="flex pt-4 overflow-x-auto scrollbar-hide">
             {availableTabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`w-[150px] px-6 text-sm rounded-md shadow-md h-8 ${
+                className={`w-[150px] text-sm  shadow-md h-8 ${
                   activeTab === tab
                     ? "bg-[#181818] text-[#FFFFFF]"
                     : "bg-[#FFFFFF] text-[#5D5D5D] border border-[#D9D9D9]"
@@ -317,14 +485,36 @@ export function MainPanel({
           setMessage={setMessage}
           sendMessage={sendMessage}
           isLoading={isLoading}
+          setPreventToNextEpisode={setPreventToNextEpisode}
+          setPreventToNextScene={setPreventToNextScene}
+          setCalledApiForTab={setCalledApiForTab}
+          activeTab={activeTab}
           onSceneClick={(epIndex, scIndex) => {
             loadScene(epIndex, scIndex);
           }}
           onSceneChange={({ episode, scene, sceneObj }) => {
-            console.log("🚀 ~ episode:", episode, "scene=", scene, "sceneObj", sceneObj);
+            // console.log("🚀 ~ episode:", episode, "scene=", scene, "sceneObj", sceneObj);
           }}
         />
       )}
     </div>
   );
+}
+
+{
+  /* <div className="mb-10 overflow-auto ">
+  <StoryboardUI data={storyboardData} isLoading={isLoading} handleCreateVideo={handleCreateVideo} />
+  <button
+    onClick={() => handleCreateAllVideo()}
+    className="h-[40px] w-[150px] rounded-lg m-4   float-end  flex justify-center items-center"
+    style={{ background: "linear-gradient(180deg, #A9A0FF -58.75%, #A0F9FF 155%)" }}
+    disabled={isVideoGeneration}
+  >
+    {isVideoGeneration ? (
+      <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black border-t-transparent rounded-full" />
+    ) : (
+      <>Create All</>
+    )}
+  </button>
+</div>; */
 }

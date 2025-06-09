@@ -27,7 +27,7 @@ const RenderMarkdown = ({ markdown }) => {
                       fontSize: "1rem", // 16px
                       fontWeight: "700",
                       lineHeight: "150%",
-                      margin: "1.25rem 0 0.75rem",
+                      margin: "0.5rem 0 0.75rem",
                     },
                   },
                 },

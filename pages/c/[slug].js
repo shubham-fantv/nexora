@@ -7,7 +7,7 @@ import fetcher from "../../src/dataProvider";
 import { quotes } from "../../src/utils/common";
 // Main App Component
 export default function ScriptWritingApp({ slug }) {
-  const [activeTab, setActiveTab] = useState("Synopsis");
+  const [activeTab, setActiveTab] = useState("Script");
 
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
@@ -123,24 +123,27 @@ export default function ScriptWritingApp({ slug }) {
   };
 
   useEffect(() => {
+    if (!isLoading) return;
+
     const pickRandomQuote = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setSubTitle(quotes[randomIndex]);
     };
+
     pickRandomQuote();
     const interval = setInterval(pickRandomQuote, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isLoading]);
 
   const handleCreateVideo = (item) => {};
 
   return (
     <div className="relative flex text-black h-[92vh]">
-      <div
+      {/* <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[100%] h-[512px] max-h-[512px] bg-no-repeat bg-center bg-contain pointer-events-none z-0"
         style={{ backgroundImage: "url('/images/detail-layout.png')" }}
-      />
+      /> */}
 
       <div className="relative flex flex-1 z-10">
         <LeftPanel

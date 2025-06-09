@@ -11,6 +11,10 @@ export function RightPanel({
   onSceneChange,
   onSceneClick,
   isLoading,
+  setPreventToNextEpisode,
+  setPreventToNextScene,
+  setCalledApiForTab,
+  activeTab,
 }) {
   const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(
     currEpisode > 0 ? currEpisode - 1 : null
@@ -59,6 +63,9 @@ export function RightPanel({
         );
       }
       if (selectedScene?.description == "" && !isLoading) {
+        setPreventToNextScene(currentSceneIndex);
+        setPreventToNextEpisode(currentEpisodeIndex);
+        setCalledApiForTab(activeTab);
         setMessage?.(selectedScene.prompt || "");
         sendMessage?.(selectedScene.prompt || "");
       }
@@ -79,8 +86,11 @@ export function RightPanel({
         (selectedEpisode?.child?.length == 0 && !isLoading) ||
         (!selectedEpisode?.description && !isLoading)
       ) {
+        setPreventToNextScene(currentSceneIndex);
+        setPreventToNextEpisode(currentEpisodeIndex);
         setMessage?.(selectedEpisode.prompt || "");
         sendMessage?.(selectedEpisode.prompt || "");
+        setCalledApiForTab(activeTab);
       }
     }
   }, [currentEpisodeIndex, currentSceneIndex, episodeData]);
@@ -103,7 +113,7 @@ export function RightPanel({
             <div key={epIndex} className="mb-4">
               <button
                 onClick={() => handleToggleEpisode(epIndex)}
-                className={`w-full shadow-md flex items-center justify-between p-3 ${
+                className={`w-full shadow-md flex items-center justify-evenly p-3 ${
                   openEpisodes.includes(epIndex)
                     ? "border-t border-l border-r border-[#181818] rounded-t-xl"
                     : "rounded-xl"
@@ -139,11 +149,17 @@ export function RightPanel({
                           onSceneClick?.(epIndex, scIndex);
                         }}
                         key={scIndex}
-                        className={`py-2 text-sm cursor-pointer rounded-md px-1 ${
+                        className={`py-2 flex  text-sm cursor-pointer rounded-md px-1 ${
                           isSelectedScene ? "bg-[#A0D8FF] font-semibold text-black" : ""
                         }`}
                       >
                         {"Scene " + (scIndex + 1)}
+                        {!!scene.description && (
+                          <img src="/images/icons/file-tick.svg" className="h-4 w-4 ml-1 " />
+                        )}
+                        {scene?.storyboard?.length > 0 && (
+                          <img src="/images/icons/camera.svg" className="h-4 w-4 ml-2" />
+                        )}
                       </div>
                     );
                   })}

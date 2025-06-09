@@ -108,7 +108,7 @@ export default function VideoCreationUI() {
       <div className="relative z-10 flex text-black items-center justify-center w-full h-full">
         <div className="w-full max-w-[760px] mt-10">
           <div className="flex flex-col items-center mb-8">
-            <h1 className="text-5xl font-bold  mb-3">Let's make an awesome video !</h1>
+            <h1 className="text-5xl font-bold  mb-3">Let's make an awesome Video!</h1>
             <p className="text-[#5D5D5D]">
               Create web series, vertical videos, films, music video, reels, ads or anything you
               love
