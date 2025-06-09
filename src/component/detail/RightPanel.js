@@ -13,14 +13,14 @@ export function RightPanel({
   isLoading,
 }) {
   const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(
-    currEpisode > 0 ? currEpisode - 1 : 0
+    currEpisode > 0 ? currEpisode - 1 : null
   );
-  const [currentSceneIndex, setCurrentSceneIndex] = useState(currScene > 0 ? currScene - 1 : 0);
+  const [currentSceneIndex, setCurrentSceneIndex] = useState(currScene > 0 ? currScene - 1 : null);
 
   useEffect(() => {
-    setCurrentEpisodeIndex(currEpisode > 0 ? currEpisode - 1 : 0);
-    setCurrentSceneIndex(currScene > 0 ? currScene - 1 : 0);
-    setOpenEpisodes([currEpisode > 0 ? currEpisode - 1 : 0]);
+    setCurrentEpisodeIndex(currEpisode > 0 ? currEpisode - 1 : null);
+    setCurrentSceneIndex(currScene > 0 ? currScene - 1 : null);
+    setOpenEpisodes([currEpisode > 0 ? currEpisode - 1 : null]);
   }, [currScene, currEpisode]);
 
   const [episodes, setEpisodes] = useState([]);
@@ -68,7 +68,13 @@ export function RightPanel({
         sceneObj: selectedScene,
       });
     } else if (selectedEpisode) {
-      setScriptData((selectedEpisode?.title || "") + "\n\n" + (selectedEpisode?.overview || ""));
+      setScriptData(
+        (selectedEpisode?.title || "") +
+          "\n\n" +
+          (selectedEpisode?.overview || "") +
+          "\n\n" +
+          (selectedEpisode?.description || "")
+      );
       if (selectedEpisode?.child?.length == 0 && !isLoading) {
         setMessage?.(selectedEpisode.prompt || "");
         sendMessage?.(selectedEpisode.prompt || "");

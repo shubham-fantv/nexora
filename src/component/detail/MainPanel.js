@@ -36,12 +36,12 @@ export function MainPanel({
   const [preventToNextEpisode, setPreventToNextEpisode] = useState();
   const [preventToNextScene, setPreventToNextScene] = useState();
 
-  const [selectedEpisode, setSelectedEpisode] = useState(currEpisode > 0 ? currEpisode : 1);
-  const [selectedScene, setSelectedScene] = useState(currScene > 0 ? currScene : 1);
+  const [selectedEpisode, setSelectedEpisode] = useState(currEpisode > 0 ? currEpisode : null);
+  const [selectedScene, setSelectedScene] = useState(currScene > 0 ? currScene : null);
 
   useEffect(() => {
-    setSelectedEpisode(currEpisode > 0 ? currEpisode : 1);
-    setSelectedScene(currScene > 0 ? currScene : 1);
+    setSelectedEpisode(currEpisode > 0 ? currEpisode : null);
+    setSelectedScene(currScene > 0 ? currScene : null);
   }, [currScene, currEpisode]);
 
   const [slideOffset, setSlideOffset] = useState(0);
