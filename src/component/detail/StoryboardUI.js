@@ -3,6 +3,7 @@ import { Pencil } from "lucide-react";
 import { useMutation } from "react-query";
 import fetcher from "../../dataProvider";
 import { useRouter } from "next/router";
+import RenderMarkdown from "../RenderMarkdown";
 
 export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) {
   const router = useRouter();
@@ -83,7 +84,7 @@ export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) 
                   />
                 )}
                 <div className="absolute top-4 text-[#FFF] left-4 text-xs font-medium">
-                  Shot {shot.episode_number}.{shot.shot_number}
+                  Shot {shot.scene_number}.{shot.shot_number}
                 </div>
                 <button className="absolute top-4 right-4 bg-[#242424]  p-2 rounded">
                   <img src="/images/edit.svg" style={{ height: "16px", width: "16px" }} />
@@ -92,7 +93,9 @@ export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) 
 
               {!isFinalVideo && (
                 <div className="flex flex-col flex-1 p-4">
-                  <p className="text-xs mb-6">{shot.description}</p>
+                  <p className="text-xs mb-6">
+                    <RenderMarkdown markdown={shot?.description} />
+                  </p>
 
                   <div
                     style={{
@@ -102,7 +105,9 @@ export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) 
                     }}
                   ></div>
                   <div className="py-2">
-                    <p className="text-xs">Dialogue: {shot.dialogue}</p>
+                    <p className="text-xs">
+                      Dialogue: <RenderMarkdown markdown={shot?.dialogue} />
+                    </p>
                   </div>
 
                   {/* Spacer to push the button to the bottom */}
@@ -113,7 +118,7 @@ export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) 
                       className="w-full text-sm py-3 border-2 border-[#181818] flex justify-center  text-[#181818] rounded-lg text-center font-medium"
                     >
                       {isVideoGeneration && selectedVideo.created_at == shot.created_at ? (
-                        <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black border-t-transparent rounded-full" />
+                        <div className="animate-spin flex justify-center w-5 h-5 border-2 border-black border-t-transparent rounded-full" />
                       ) : (
                         <>Create</>
                       )}

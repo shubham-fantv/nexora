@@ -75,13 +75,17 @@ export function RightPanel({
         sceneObj: selectedScene,
       });
     } else if (selectedEpisode) {
-      setScriptData(
-        (selectedEpisode?.title || "") +
-          "\n\n" +
-          (selectedEpisode?.overview || "") +
-          "\n\n" +
-          (selectedEpisode?.description || "")
-      );
+      if (episodeData?.[currentEpisodeIndex]?.description) {
+        setScriptData(selectedEpisode?.description || "");
+      } else {
+        setScriptData(
+          (selectedEpisode?.title || "") +
+            "\n\n" +
+            (selectedEpisode?.overview || "") +
+            "\n\n" +
+            (selectedEpisode?.description || "")
+        );
+      }
       if (
         (selectedEpisode?.child?.length == 0 && !isLoading) ||
         (!selectedEpisode?.description && !isLoading)

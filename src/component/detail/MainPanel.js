@@ -70,8 +70,8 @@ export function MainPanel({
     setIsVideoGeneration(true);
     generateVideoApi({
       session_id: router?.query?.slug,
-      episode_number: storyboardData?.[0]?.episode_number,
-      scene_number: storyboardData?.[0]?.scene_number,
+      episode_number: selectedEpisode,
+      scene_number: selectedScene,
     });
   };
 
