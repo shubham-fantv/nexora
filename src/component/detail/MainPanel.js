@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import LoadingMarquee from "../common/LoadingMarquee";
 import { RightPanel } from "./RightPanel";
 import ShimmerCard from "../Shimmer/StoryboardShimmer";
+import { BookOpen, User, LayoutDashboard } from "lucide-react";
 
 export function MainPanel({
   activeTab,
@@ -144,7 +145,6 @@ export function MainPanel({
   };
 
   const isAtFirst = selectedEpisode === null && selectedScene === null;
-
   const isAtLast = (() => {
     if (!Array.isArray(episodes) || episodes?.length === 0) return true;
 
@@ -162,17 +162,17 @@ export function MainPanel({
       case "Script":
         return (
           <div
-            className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-r-lg rounded-bl-lg"
+            className="flex-1 relative overflow-hidden"
             style={{ height: "100%", maxHeight: "100%" }}
           >
             {!isAtFirst && (
               <button
                 onClick={handlePrevScript}
                 disabled={isAtFirst}
-                className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/5 transition-colors `}
+                className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/15 transition-colors `}
               >
                 <div
-                  className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-xs  transition-colors`}
+                  className={`w-8 h-8 rounded-full bg-black/10 hover:bg-black/50 flex items-center justify-center   transition-colors`}
                 >
                   <svg
                     width="24"
@@ -192,10 +192,10 @@ export function MainPanel({
               <button
                 onClick={handleNextScript}
                 disabled={isAtLast}
-                className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/5 transition-colors`}
+                className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 h-[calc(100%)] px-2 group flex items-center justify-center hover:bg-black/15 transition-colors`}
               >
                 <div
-                  className={`w-8 h-8 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm  transition-colors`}
+                  className={`w-8 h-8 rounded-full bg-black/10 hover:bg-black/50 flex items-center justify-center backdrop-blur-sm  transition-colors`}
                 >
                   <svg
                     width="24"
@@ -231,8 +231,9 @@ export function MainPanel({
                         {isLoading && calledApiForTab == "Script" ? (
                           selectedEpisode - 1 === preventToNextEpisode &&
                           selectedScene - 1 === preventToNextScene ? (
-                            <p className="flex justify-center pt-10">
-                              Scene shots being generated...
+                            <p  className="flex bg-[#F3F5FF] text-sm w-full text-[#6B61FF] justify-between p-3 rounded-lg">
+                              <p> Scene shots being generated...</p>
+                              <div className="animate-spin w-6 h-6 border-2 border-[#6B61FF]  border-t-transparent rounded-full" />
                             </p>
                           ) : (
                             <p className="flex justify-center pt-10">
@@ -260,7 +261,7 @@ export function MainPanel({
                 }}
               />
             </div>
-            {activeTab == "Script" && calledApiForTab == "Script" && (
+            {/* {activeTab == "Script" && calledApiForTab == "Script" && (
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 bg-white/80  px-3 py-1 ">
                 {isLoading && scriptData && (
                   <div className="mt-1  w-full bg-[#FFF]">
@@ -268,13 +269,13 @@ export function MainPanel({
                   </div>
                 )}
               </div>
-            )}
+            )} */}
           </div>
         );
       case "Character":
         return (
           <div
-            className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-r-lg rounded-bl-lg"
+            className="flex-1 relative overflow-hidden"
             style={{ height: "100%", maxHeight: "100%" }}
           >
             <div className="mb-6">
@@ -285,20 +286,42 @@ export function MainPanel({
       case "Storyboard":
         return (
           <div
-            className="flex-1 relative overflow-hidden bg-[#FFFFFF] border border-[#18181826] rounded-r-lg rounded-bl-lg"
+            className="flex-1 relative overflow-hidden"
             style={{ height: "100%", maxHeight: "100%" }}
           >
-            {currEpisode && currScene && (
+            {/* {currEpisode && currScene && ( */}
+            <div className="flex justify-between">
+
               <div className="px-6 pt-2">
                 <RenderMarkdown
                   markdown={
-                    episodes[selectedEpisode - 1]?.title +
+                    episodes[selectedEpisode-1]?.title +
                     "\n " +
                     episodes?.[selectedEpisode - 1]?.child[selectedScene - 1]?.title
                   }
                 />
               </div>
-            )}
+              <div>
+              {episodes?.[selectedEpisode - 1]?.child?.[selectedScene - 1]?.storyboard?.length >
+                    0 && (
+                    <button
+                      onClick={() => handleCreateAllVideo()}
+                      className="h-[40px] text-white text-sm w-[110px] rounded-lg m-4  mb-4  float-end  flex justify-center items-center"
+                      style={{
+                        background: "#6B61FF",
+                      }}
+                      disabled={isVideoGeneration}
+                    >
+                      {isVideoGeneration ? (
+                        <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black  border-t-transparent rounded-full" />
+                      ) : (
+                        <>Create All</>
+                      )}
+                    </button>
+                  )}
+              </div>
+            </div>
+
 
             {!isAtFirst && (
               <button
@@ -385,23 +408,7 @@ export function MainPanel({
                       No Storyboard created, click on scene to generate Storyboard
                     </p>
                   )}
-                  {episodes?.[selectedEpisode - 1]?.child?.[selectedScene - 1]?.storyboard?.length >
-                    0 && (
-                    <button
-                      onClick={() => handleCreateAllVideo()}
-                      className="h-[40px] w-[150px] rounded-lg m-4  mb-4  float-end  flex justify-center items-center"
-                      style={{
-                        background: "linear-gradient(180deg, #A9A0FF -58.75%, #A0F9FF 155%)",
-                      }}
-                      disabled={isVideoGeneration}
-                    >
-                      {isVideoGeneration ? (
-                        <div className="animate-spin flex justify-center w-6 h-6 border-2 border-black  border-t-transparent rounded-full" />
-                      ) : (
-                        <>Create All</>
-                      )}
-                    </button>
-                  )}
+                  
                 </div>
               </div>
 
@@ -417,7 +424,7 @@ export function MainPanel({
                 }}
               />
             </div>
-            {activeTab == "Storyboard" && calledApiForTab == "Storyboard" && (
+            {/* {activeTab == "Storyboard" && calledApiForTab == "Storyboard" && (
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 bg-white/80  px-3 py-1 ">
                 {isLoading &&
                   episodes?.[selectedEpisode - 1]?.child?.[selectedScene - 1]?.storyboard?.length ==
@@ -427,7 +434,7 @@ export function MainPanel({
                     </div>
                   )}
               </div>
-            )}
+            )} */}
           </div>
         );
       case "Videos":
@@ -454,25 +461,55 @@ export function MainPanel({
 
   return (
     <div className="flex w-[70%]">
-      <div className={`${isFullWidth ? "w-[1000%]" : "w-[80%]"} flex flex-col mr-2`}>
-        {/* Main Content */}
+      <div className={`${isFullWidth ? "w-[1000%]" : "w-[80%]"} flex flex-col mr-4`}>
         <div className="overflow-auto h-screen  sticky scrollbar-hide">
-          <div className="flex pt-4 overflow-x-auto scrollbar-hide">
-            {availableTabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`w-[150px] text-sm  shadow-md h-8 ${
-                  activeTab === tab
-                    ? "bg-[#181818] text-[#FFFFFF]"
-                    : "bg-[#FFFFFF] text-[#5D5D5D] border border-[#D9D9D9]"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
+          <div className="flex">
+            <div className="flex item bg-white rounded-full border border-[#E5E5EF] shadow py-2 px-4 h-12 mt-6 mb-4">
+              {availableTabs.map((tab) => (
+                <button
+                  key={tab.label}
+                  onClick={() => setActiveTab(tab.label)}
+                  className={`flex text-sm items-center gap-2 px-6 py-1.5 rounded-full transition-all duration-200 ${
+                    activeTab === tab.label
+                      ? "text-white font-semibold"
+                      : "bg-transparent text-[#5D5D5D] font-normal"
+                  }`}
+                  style={
+                    activeTab === tab.label
+                      ? {
+                          background: 'linear-gradient(180deg, #6B61FF -28.12%, #FFA0FF 128.13%)',
+                          // border: '1px solid #BDBDBD',
+                          boxShadow: '0px 1px 7px 0px #0000001F',
+                        }
+                      : {}
+                  }
+                >
+                  {tab.icon}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div style={{ height: "90%" }}>{renderContent()}</div>
+          <div
+            style={{
+              height: "86%",
+              padding: "1.5px", // thickness of the border
+              borderRadius: "20px", // match your design
+              overflow:"hidden",
+              background: "linear-gradient(180deg, #6B61FF 0%, #FFA0FF 100%)", // or your desired gradient
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                width: "100%",
+                background: "#fff",
+                borderRadius: "20px", // slightly less than outer for the border to show
+              }}
+            >
+              {renderContent()}
+            </div>
+          </div>
         </div>
       </div>
 

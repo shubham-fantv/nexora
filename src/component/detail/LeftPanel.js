@@ -37,9 +37,9 @@ export function LeftPanel({
       return leftSectionData.map((item, index) => {
         if (item.sender) {
           return (
-            <div key={`sender-${index}`} className=" flex flex-row-reverse rounded-lg  mb-3 ">
-              <div className="flex items-start gap-3   bg-[#f7f4ed] w-[80%] rounded-lg p-2  shadow-md">
-                <div className="w-6 h-6 rounded-full bg-pink-200 flex items-center justify-center text-gray-800 flex-shrink-0">
+            <div key={`sender-${index}`} className=" flex flex-row-reverse rounded-lg  m-3 ">
+              <div className="flex items-center gap-3   bg-[#F3F5FF] w-[80%] rounded-lg p-2  shadow-md" style={{border: '1px solid #DDE2FF'}}>
+                <div className="w-8 h-8 rounded-full bg-[#FFD0D0] flex items-center justify-center text-gray-800 flex-shrink-0">
                   N
                 </div>
                 <p className="text-[#5D5D5D] text-base font-normal">{item.sender.message}</p>
@@ -61,36 +61,39 @@ export function LeftPanel({
   };
 
   return (
-    <div className="w-[30%] p-4 flex flex-col gap-4 relative h-full mt-2">
+    <div className="w-[30%] p-4 flex flex-col gap-4 relative h-full mt-2 ">
       <div
         ref={responseContainerRef}
-        className="border relative border-[#FFFFFF26] rounded-lg  overflow-y-auto mb-[128px] w-full scrollbar-hide"
+        className=" bg-[#FFFFFF]  relative rounded-lg  overflow-y-auto mb-[168px] w-full scrollbar-hide"
+        style={{border:'2px solid #DDE2FF'}}
       >
         {renderChatMessages()}
 
-        <div className="sticky bottom-0 left-4 right-4 bg-[#f7f7f7]">
+        <div className="sticky bottom-0 left-4 right-4  bg-[#f7f7f7]">
           <ThinkingAnimation isThinking={isLoading} />
         </div>
       </div>
 
-      <div className="absolute bottom-24 left-4 right-4 overflow-x-auto scrollbar-hide">
+      <div className="absolute bottom-32 left-4 right-4 overflow-x-auto scrollbar-hide">
         <div className="flex gap-2 w-max whitespace-nowrap">
           {staticTabs.map((item, i) => (
             <button
               onClick={() => handleClickPrompt(item)}
               key={i}
-              className="border border-[#18181826] bg-[#FFF] rounded-md px-4 py-2 text-sm hover:bg-gray-700/50 transition-colors"
+              style={{border: '1.5px solid #DDE2FF'}}
+              className="border border-[#18181826] bg-[#FFF] rounded-lg px-4 py-2 text-sm hover:bg-gray-700/10 transition-colors"
             >
               {item}
             </button>
           ))}
         </div>
       </div>
-      <div className="absolute bottom-4 left-4 right-4 border border-[#18181826] bg-[#FFF] rounded-lg p-4 flex items-center">
-        <input
+      <div className="absolute bottom-4 left-4 right-4 border-2 border-[#6B61FF] bg-[#FFF] rounded-lg p-4 flex items-center">
+        <textarea
+          rows={3}
           type="text"
           placeholder="Give prompt here"
-          className="bg-transparent flex-grow text-[#686868] outline-none"
+          className="bg-transparent flex-grow text-sm text-[#686868] outline-none"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}

@@ -5,6 +5,14 @@ import { MainPanel } from "../../src/component/detail/MainPanel";
 import { RightPanel } from "../../src/component/detail/RightPanel";
 import fetcher from "../../src/dataProvider";
 import { quotes } from "../../src/utils/common";
+import { BookOpen, User, LayoutDashboard, Video } from "lucide-react";
+
+const initialTabs = [
+  { label: "Script", icon: <BookOpen size={18} /> },
+  { label: "Character", icon: <User size={18} /> },
+  { label: "Storyboard", icon: <LayoutDashboard size={18} /> },
+];
+
 // Main App Component
 export default function ScriptWritingApp({ slug }) {
   const [activeTab, setActiveTab] = useState("Script");
@@ -28,7 +36,7 @@ export default function ScriptWritingApp({ slug }) {
   const [prevPrompt, setPrevPrompt] = useState("");
   const [currEpisode, setCurrEpisode] = useState(null);
   const [currScene, setCurrScene] = useState(null);
-  const [availableTabs, setAvailableTabs] = useState(["Script", "Character", "Storyboard"]);
+  const [availableTabs, setAvailableTabs] = useState(initialTabs);
 
   const [episodes, setEpisodes] = useState("");
   const [finalVideo, setFinalVideo] = useState("");
@@ -49,8 +57,11 @@ export default function ScriptWritingApp({ slug }) {
 
       if (response?.final_video?.length > 0) {
         setAvailableTabs((prevTabs) => {
-          if (!prevTabs.includes("Videos")) {
-            return [...prevTabs, "Videos"];
+          if (!prevTabs.some((tab) => tab.label === "Videos")) {
+            return [
+              ...prevTabs,
+              { label: "Videos", icon: <Video size={18} /> },
+            ];
           }
           return prevTabs;
         });
@@ -70,8 +81,11 @@ export default function ScriptWritingApp({ slug }) {
       setIsLoading(false);
       if (response?.final_video?.length > 0) {
         setAvailableTabs((prevTabs) => {
-          if (!prevTabs.includes("Videos")) {
-            return [...prevTabs, "Videos"];
+          if (!prevTabs.some((tab) => tab.label === "Videos")) {
+            return [
+              ...prevTabs,
+              { label: "Videos", icon: <Video size={18} /> },
+            ];
           }
           return prevTabs;
         });
@@ -139,7 +153,7 @@ export default function ScriptWritingApp({ slug }) {
   const handleCreateVideo = (item) => {};
 
   return (
-    <div className="relative flex text-black h-[92vh]">
+    <div className="relative flex text-black h-[92vh] bg-[#F3F5FF] ">
       {/* <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[100%] h-[512px] max-h-[512px] bg-no-repeat bg-center bg-contain pointer-events-none z-0"
         style={{ backgroundImage: "url('/images/detail-layout.png')" }}

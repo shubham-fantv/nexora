@@ -108,50 +108,54 @@ export default function VideoCreationUI() {
       <div className="relative z-10 flex text-black items-center justify-center w-full h-full">
         <div className="w-full max-w-[760px] mt-10">
           <div className="flex flex-col items-center mb-8">
-            <h1 className="text-5xl font-bold  mb-3">Let's make an awesome Video!</h1>
-            <p className="text-[#5D5D5D]">
-              Create web series, vertical videos, films, music video, reels, ads or anything you
-              love
+            <h1 className="text-[32px] font-bold  mb-3">Turn Ideas Into  <i>Blockbusters!</i></h1>
+            <p className="text-[#181818] text-sm">
+            Create web series, Short Drama & Music Video
             </p>
           </div>
 
-          <div className="border bg-[#FFF] border-[#FFFFFF] rounded-lg p-6 mb-6">
-            <textarea
-              rows={3}
-              type="text"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Give your prompts here..."
-              className="w-full bg-transparent text-[#5D5D5D] outline-none mb-6"
-            />
 
-            <div className="flex justify-between">
-              <div className="flex gap-4">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.name)}
-                    className={`flex items-center gap-2 py-2 px-4 rounded-md ${
-                      selectedCategory === category.name ? "bg-[#1818180D]" : "bg-[#1818180D]"
-                    }`}
-                  >
-                    {category.icon}
-                    <span className="text-[#5D5D5D] text-sm">{category.name}</span>
-                  </button>
-                ))}
+          <div style={{border: '4px solid rgba(255,255,255,0.3)', boxShadow: '0px 2px 5px 0px #00000029',backdropFilter: 'blur(44px)'
+            }} className=" rounded-xl mb-6">
+            <div className="p-6 bg-[#FFFFFF] rounded-xl">
+              <textarea
+                rows={2}
+                type="text"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Give your prompts here..."
+                className="w-full bg-transparent text-[#5D5D5D] outline-none mb-6"
+              />
+
+              <div className="flex justify-between">
+                <div className="flex gap-4">
+                  {categories.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.name)}
+                      className={`flex items-center gap-2 py-2 px-4 rounded-md ${
+                        selectedCategory === category.name ? "bg-[#1818180D]" : "bg-[#1818180D]"
+                      }`}
+                    
+                    >
+                      {category.icon}
+                      <span className="text-[#5D5D5D] text-sm">{category.name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={generateVideo}
+                  disabled={isLoading}
+                  className="flex items-center bg-[#181818] h-10 w-10  rounded-md justify-center"
+                >
+                  {isLoading ? (
+                    <div className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <img src="/images/submit.svg" alt="Submit" />
+                  )}
+                </button>
               </div>
-
-              <button
-                onClick={generateVideo}
-                disabled={isLoading}
-                className="flex items-center bg-[#181818] h-10 w-10  rounded-md justify-center"
-              >
-                {isLoading ? (
-                  <div className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full" />
-                ) : (
-                  <img src="/images/submit.svg" alt="Submit" />
-                )}
-              </button>
             </div>
           </div>
 
@@ -159,8 +163,11 @@ export default function VideoCreationUI() {
             {templates.map((template) => (
               <div
                 key={template.id}
-                className="border bg-[#FFFFFF] border-[#18181826] rounded-lg p-4 cursor-pointer hover:bg-[#FFFFFF] hover:border-gray-400 transition-all"
+                className="rounded-xl p-4 cursor-pointer hover:bg-[#FFFFFF] hover:border-gray-400 transition-all"
                 onClick={() => handleTemplateClick(template.description)}
+                 style={{border: '1px solid #FFFFFF', backdropFilter: 'blur(64px)', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.6) 100%)'
+
+                 }}
               >
                 <h3 className="text-[#181818] mb-2 flex items-center">
                   {template.title}

@@ -106,8 +106,8 @@ export function RightPanel({
   };
   return (
     <div
-      className="overflow-auto flex flex-col bg-[#FFFFFF] border border-[#18181826] mr-4 mt-12 rounded-lg relative"
-      style={{ height: "calc(100vh - 120px)" }}
+      className="overflow-auto flex flex-col bg-[#FFFFFF] border border-[#18181826] mr-4 mt-6 rounded-lg relative"
+      style={{ height: "calc(100vh - 85px)" }}
     >
       <div className="w-[170px] p-4 text-[#5D5D5D]">
         {episodes.length === 0 && <div>Episodes will come here</div>}
@@ -119,9 +119,11 @@ export function RightPanel({
                 onClick={() => handleToggleEpisode(epIndex)}
                 className={`w-full shadow-md flex items-center justify-evenly p-3 ${
                   openEpisodes.includes(epIndex)
-                    ? "border-t border-l border-r border-[#181818] rounded-t-xl"
+                    ? "border-t border-l border-r border-[#6B61FF] rounded-t-xl "
                     : "rounded-xl"
-                } ${isSelectedEpisode ? "bg-[#C7E8FF]" : "bg-[#F3F3F3]"}`}
+                } ${isSelectedEpisode ? "bg-[#F3F5FF]" : "bg-[#F3F5FF]"}`}
+
+                style={{ borderTopWidth: "1.5px", borderLeftWidth: "1.5px", borderRightWidth: "1.5px" }}
               >
                 <span className="text-sm font-medium">{`Episode ${String(epIndex + 1).padStart(
                   2,
@@ -139,9 +141,10 @@ export function RightPanel({
 
               {openEpisodes.includes(epIndex) && episode.child?.length > 0 && (
                 <div
-                  className={`px-3 rounded-b-xl border-l border-r border-b border-[#181818] shadow-md ${
-                    isSelectedEpisode ? "bg-[#E6F4FF]" : "bg-[#F3F3F3]"
+                  className={`rounded-b-xl border-l border-r border-b border-[#6B61FF] shadow-md ${
+                    isSelectedEpisode ? "bg-[#F3F5FF]" : "bg-[#F3F5FF]"
                   }`}
+                  style={{ borderRightWidth: "1.5px", borderBottomWidth: "1.5px",borderLeftWidth: "1.5px", }}
                 >
                   {episode.child.map((scene, scIndex) => {
                     const isSelectedScene = isSelectedEpisode && scIndex === currentSceneIndex;
@@ -153,17 +156,21 @@ export function RightPanel({
                           onSceneClick?.(epIndex, scIndex);
                         }}
                         key={scIndex}
-                        className={`py-2 flex  text-sm cursor-pointer rounded-md px-1 ${
-                          isSelectedScene ? "bg-[#A0D8FF] font-semibold text-black" : ""
+                        className={`w-full flex-1 py-2 pl-4 flex-grow flex  text-sm cursor-pointer rounded-md ${
+                          isSelectedScene ? "bg-[#FFFFFF] text-black" : ""
                         }`}
                       >
-                        {"Scene " + (scIndex + 1)}
-                        {!!scene.description && (
-                          <img src="/images/icons/file-tick.svg" className="h-4 w-4 ml-1 " />
-                        )}
-                        {scene?.storyboard?.length > 0 && (
-                          <img src="/images/icons/camera.svg" className="h-4 w-4 ml-2" />
-                        )}
+                        <div className="w-full">
+                          {"Scene " + (scIndex + 1)}
+                          </div>
+                        <div className="flex w-full justify-center items-center ">
+                          {!!scene.description && (
+                            <img src="/images/icons/file-tick.svg" className="h-3 w-3 " />
+                          )}
+                          {scene?.storyboard?.length > 0 && (
+                            <img src="/images/icons/camera.svg" className="h-3 w-3 ml-2" />
+                          )}
+                         </div>
                       </div>
                     );
                   })}

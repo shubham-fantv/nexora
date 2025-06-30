@@ -10,8 +10,8 @@ const styles = {
     zIndex: "99",
     padding: "0 40px",
     width: "100%",
-    backgroundColor: "#F7F7F7",
-    // backgroundColor: "#FFF",
+    // backgroundColor: "#F7F7F7",
+    backgroundColor: "#FFF",
 
     "@media (max-width:767px)": {
       height: "55px",

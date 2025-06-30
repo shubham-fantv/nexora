@@ -10,6 +10,7 @@ export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) 
   const [selectedVideo, setSelectedVideo] = useState();
   const [isVideoGeneration, setIsVideoGeneration] = useState(false);
   const [storyboardData, setStoryboardData] = useState([]);
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
   useEffect(() => {
     setStoryboardData(data);
@@ -93,9 +94,25 @@ export default function StoryboardUI({ data, isLoading, isFinalVideo = false }) 
 
               {!isFinalVideo && (
                 <div className="flex flex-col flex-1 p-4">
-                  <p className="text-xs mb-6">
+                  <p className={`text-xs mb-3 ${expandedIndex === index ? "" : "line-clamp-2"}`}>
                     <RenderMarkdown markdown={shot?.description} />
                   </p>
+                  {expandedIndex !== index && (
+                    <span
+                      className="text-[#6B61FF] cursor-pointer text-sm"
+                      onClick={() => setExpandedIndex(index)}
+                    >
+                      Show more . . .
+                    </span>
+                  )}
+                  {expandedIndex === index && (
+                    <span
+                      className="text-[#6B61FF] cursor-pointer text-sm"
+                      onClick={() => setExpandedIndex(null)}
+                    >
+                      Show less
+                    </span>
+                  )}
 
                   <div
                     style={{

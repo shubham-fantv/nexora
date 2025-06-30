@@ -8,6 +8,13 @@ body {
   @apply font-inter;
 }
 
+
+@font-face {
+  font-family: "Geist";
+  src: url("../public/fonts/Geist-VariableFont_wght.ttf");
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Nohemi";
   src: url("../public/fonts/Nohemi.ttf");
@@ -27,6 +34,8 @@ body {
   font-display: swap;
 }
 
+
+
 html,
 body {
   margin: 0;
@@ -34,17 +43,17 @@ body {
   /* scroll-behavior: auto; */
   overscroll-behavior: none;
   margin: auto;
-  font-family: "Inter", sans-serif;
+  font-family: "Geist", sans-serif;
   font-weight: 400;
   overflow-x: clip;
   /* line-height: 19px; */
   letter-spacing: 0.16px;
-  background-color: #f7f7f7;
+  background-color: #FFFFFF;
   descent-override: 0%;
 }
 
 * {
-  font-family: "Inter";
+  font-family: "Geist";
 }
 
 a {

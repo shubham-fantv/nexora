@@ -19,7 +19,7 @@ export default function ThinkingAnimation({ isThinking = true, color = "#6e6e6e"
   if (!isThinking) return null;
 
   return (
-    <div className="flex text-black items-center">
+    <div className="flex text-black items-center px-3 py-2">
       <div className="text-sm font-medium mr-2" style={{ color }}>
         Thinking
       </div>

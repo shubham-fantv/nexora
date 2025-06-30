@@ -17,9 +17,9 @@ module.exports = {
         xs: "2px",
       },
       fontFamily: {
-        nohemi: ["Nohemi", "sans-serif"],
-        spacegrotesk: ["Space Grotesk", "sans-serif"],
-        inter: ["Inter", "sans-serif"],
+        nohemi: ["Geist", "sans-serif"],
+        spacegrotesk: ["Geist", "sans-serif"],
+        inter: ["Geist", "sans-serif"],
       },
     },
   },
